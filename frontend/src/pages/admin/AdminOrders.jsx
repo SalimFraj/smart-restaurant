@@ -8,6 +8,7 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
+  const [actionLoading, setActionLoading] = useState(null); // Track which action is in progress
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -27,12 +28,20 @@ export default function AdminOrders() {
   };
 
   const updateStatus = async (orderId, newStatus) => {
+    // Prevent duplicate requests
+    if (actionLoading) return;
+
+    const actionKey = `${orderId}-${newStatus}`;
+    setActionLoading(actionKey);
+
     try {
       await api.put(`/orders/${orderId}/status`, { status: newStatus });
       toast.success('Order status updated');
       fetchOrders();
     } catch (error) {
       toast.error('Failed to update order status');
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -139,32 +148,52 @@ export default function AdminOrders() {
                   <button
                     onClick={() => updateStatus(order._id, 'preparing')}
                     className="btn btn-sm btn-info"
+                    disabled={actionLoading !== null}
                   >
-                    Start Preparing
+                    {actionLoading === `${order._id}-preparing` ? (
+                      <><span className="loading loading-spinner loading-xs"></span> Updating...</>
+                    ) : (
+                      'Start Preparing'
+                    )}
                   </button>
                 )}
                 {order.status === 'preparing' && (
                   <button
                     onClick={() => updateStatus(order._id, 'ready')}
                     className="btn btn-sm btn-success"
+                    disabled={actionLoading !== null}
                   >
-                    Mark Ready
+                    {actionLoading === `${order._id}-ready` ? (
+                      <><span className="loading loading-spinner loading-xs"></span> Updating...</>
+                    ) : (
+                      'Mark Ready'
+                    )}
                   </button>
                 )}
                 {order.status === 'ready' && (
                   <button
                     onClick={() => updateStatus(order._id, 'delivered')}
                     className="btn btn-sm btn-primary"
+                    disabled={actionLoading !== null}
                   >
-                    Mark Delivered
+                    {actionLoading === `${order._id}-delivered` ? (
+                      <><span className="loading loading-spinner loading-xs"></span> Updating...</>
+                    ) : (
+                      'Mark Delivered'
+                    )}
                   </button>
                 )}
                 {order.status !== 'cancelled' && order.status !== 'delivered' && (
                   <button
                     onClick={() => updateStatus(order._id, 'cancelled')}
                     className="btn btn-sm btn-error"
+                    disabled={actionLoading !== null}
                   >
-                    Cancel Order
+                    {actionLoading === `${order._id}-cancelled` ? (
+                      <><span className="loading loading-spinner loading-xs"></span> Cancelling...</>
+                    ) : (
+                      'Cancel Order'
+                    )}
                   </button>
                 )}
               </div>

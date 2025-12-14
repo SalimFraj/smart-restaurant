@@ -14,6 +14,8 @@ export default function AdminMenu() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, itemId: null, itemName: '' });
+  const [formSubmitting, setFormSubmitting] = useState(false); // Track form submission
+  const [deleteLoading, setDeleteLoading] = useState(false); // Track delete action
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -75,6 +77,11 @@ export default function AdminMenu() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Prevent duplicate submissions
+    if (formSubmitting) return;
+    setFormSubmitting(true);
+
     try {
       const data = {
         ...formData,
@@ -111,6 +118,8 @@ export default function AdminMenu() {
       fetchMenuItems();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to save menu item');
+    } finally {
+      setFormSubmitting(false);
     }
   };
 
@@ -144,12 +153,19 @@ export default function AdminMenu() {
   };
 
   const confirmDelete = async () => {
+    // Prevent duplicate requests
+    if (deleteLoading) return;
+    setDeleteLoading(true);
+
     try {
       await api.delete(`/menu/${deleteModal.itemId}`);
       toast.success('Menu item deleted');
       fetchMenuItems();
     } catch (error) {
       toast.error('Failed to delete menu item');
+    } finally {
+      setDeleteLoading(false);
+      setDeleteModal({ isOpen: false, itemId: null, itemName: '' });
     }
   };
 
@@ -368,8 +384,16 @@ export default function AdminMenu() {
               </div>
 
               <div className="card-actions justify-end mt-4">
-                <button type="submit" className="btn btn-primary">
-                  {editingItem ? 'Update' : 'Create'}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={formSubmitting}
+                >
+                  {formSubmitting ? (
+                    <><span className="loading loading-spinner loading-xs"></span> Saving...</>
+                  ) : (
+                    editingItem ? 'Update' : 'Create'
+                  )}
                 </button>
               </div>
             </form>
@@ -426,6 +450,7 @@ export default function AdminMenu() {
         confirmText="Delete"
         cancelText="Cancel"
         icon="🗑️"
+        loading={deleteLoading}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
@@ -9,7 +9,34 @@ export default function AdminReservations() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [sortBy, setSortBy] = useState('newest'); // Default: newest first
+  const [actionLoading, setActionLoading] = useState(null); // Track which action is in progress
   const { t } = useTranslation();
+
+  // Sort reservations based on selected option
+  const sortedReservations = useMemo(() => {
+    const sorted = [...reservations];
+
+    switch (sortBy) {
+      case 'newest':
+        return sorted.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+      case 'oldest':
+        return sorted.sort((a, b) => new Date(a.createdAt || a.date) - new Date(b.createdAt || b.date));
+      case 'date-asc':
+        return sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
+      case 'date-desc':
+        return sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+      case 'guests-desc':
+        return sorted.sort((a, b) => b.guests - a.guests);
+      case 'guests-asc':
+        return sorted.sort((a, b) => a.guests - b.guests);
+      case 'status':
+        const statusOrder = { pending: 0, approved: 1, completed: 2, rejected: 3, cancelled: 4 };
+        return sorted.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+      default:
+        return sorted;
+    }
+  }, [reservations, sortBy]);
 
   useEffect(() => {
     fetchReservations();
@@ -30,12 +57,20 @@ export default function AdminReservations() {
   };
 
   const updateStatus = async (reservationId, newStatus) => {
+    // Prevent duplicate requests
+    if (actionLoading) return;
+
+    const actionKey = `${reservationId}-${newStatus}`;
+    setActionLoading(actionKey);
+
     try {
       await api.put(`/reservations/${reservationId}/status`, { status: newStatus });
       toast.success('Reservation status updated');
       fetchReservations();
     } catch (error) {
       toast.error('Failed to update reservation status');
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -63,9 +98,23 @@ export default function AdminReservations() {
         </svg>
       </Link>
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
         <h1 className="text-4xl font-bold">{t('admin.reservations')}</h1>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-3">
+          {/* Sort Dropdown */}
+          <select
+            className="select select-bordered"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="newest">📅 Newest First</option>
+            <option value="oldest">📅 Oldest First</option>
+            <option value="date-desc">🗓️ Reservation Date (Latest)</option>
+            <option value="date-asc">🗓️ Reservation Date (Earliest)</option>
+            <option value="guests-desc">👥 Most Guests</option>
+            <option value="guests-asc">👥 Fewest Guests</option>
+            <option value="status">📊 By Status</option>
+          </select>
           <input
             type="date"
             className="input input-bordered"
@@ -88,7 +137,7 @@ export default function AdminReservations() {
       </div>
 
       <div className="space-y-4">
-        {reservations.map(reservation => (
+        {sortedReservations.map(reservation => (
           <div key={reservation._id} className="card bg-base-100 shadow-xl">
             <div className="card-body">
               <div className="flex justify-between items-start mb-4">
@@ -134,14 +183,24 @@ export default function AdminReservations() {
                     <button
                       onClick={() => updateStatus(reservation._id, 'approved')}
                       className="btn btn-sm btn-success"
+                      disabled={actionLoading !== null}
                     >
-                      Approve
+                      {actionLoading === `${reservation._id}-approved` ? (
+                        <><span className="loading loading-spinner loading-xs"></span> Approving...</>
+                      ) : (
+                        'Approve'
+                      )}
                     </button>
                     <button
                       onClick={() => updateStatus(reservation._id, 'rejected')}
                       className="btn btn-sm btn-error"
+                      disabled={actionLoading !== null}
                     >
-                      Reject
+                      {actionLoading === `${reservation._id}-rejected` ? (
+                        <><span className="loading loading-spinner loading-xs"></span> Rejecting...</>
+                      ) : (
+                        'Reject'
+                      )}
                     </button>
                   </>
                 )}
@@ -149,8 +208,13 @@ export default function AdminReservations() {
                   <button
                     onClick={() => updateStatus(reservation._id, 'completed')}
                     className="btn btn-sm btn-primary"
+                    disabled={actionLoading !== null}
                   >
-                    Mark Completed
+                    {actionLoading === `${reservation._id}-completed` ? (
+                      <><span className="loading loading-spinner loading-xs"></span> Completing...</>
+                    ) : (
+                      'Mark Completed'
+                    )}
                   </button>
                 )}
               </div>
@@ -158,7 +222,7 @@ export default function AdminReservations() {
           </div>
         ))}
 
-        {reservations.length === 0 && (
+        {sortedReservations.length === 0 && (
           <div className="text-center py-16">
             <p className="text-xl">No reservations found</p>
           </div>

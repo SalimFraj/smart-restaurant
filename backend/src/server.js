@@ -57,17 +57,10 @@ const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-// Allowed origins for CORS (production + development)
-const allowedOrigins = [
-  FRONTEND_URL,
-  'http://localhost:5173',
-  'http://localhost:3000'
-].filter(Boolean);
-
 // Socket.IO Setup
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: FRONTEND_URL,
     credentials: true,
     methods: ['GET', 'POST'],
   },
@@ -101,17 +94,9 @@ app.use(helmet({
  */
 app.use(compression());
 
-// CORS - Handle multiple origins for dev and production
+// CORS
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, curl, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: FRONTEND_URL,
   credentials: true,
 }));
 
