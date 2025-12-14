@@ -11,14 +11,11 @@
 const ADMIN_PIN = process.env.ADMIN_PIN || '23851';
 const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
-// Routes that should be protected in demo mode
+// Routes that should be protected in demo mode (only menu modifications)
 const PROTECTED_PATTERNS = [
     { method: 'DELETE', path: /^\/api\/v1\/menu/ },
     { method: 'PUT', path: /^\/api\/v1\/menu/ },
     { method: 'POST', path: /^\/api\/v1\/menu/ },
-    { method: 'DELETE', path: /^\/api\/v1\/orders/ },
-    { method: 'PUT', path: /^\/api\/v1\/orders\/.*\/status/ },
-    { method: 'PUT', path: /^\/api\/v1\/reservations\/.*\/status/ },
 ];
 
 // Routes that are always allowed (even in demo mode)
