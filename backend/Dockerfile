@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (using npm install since this is a workspace monorepo without individual lock files)
+RUN npm install --omit=dev
 
 # Copy source code
 COPY . .
