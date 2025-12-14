@@ -11,6 +11,12 @@
 const ADMIN_PIN = process.env.ADMIN_PIN || '23851';
 const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
+// Rate limiting for PIN verification (in-memory store)
+const pinAttempts = new Map();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const LOCKOUT_MS = 60 * 60 * 1000; // 1 hour lockout after max attempts
+
 // Routes that should be protected in demo mode (only menu modifications)
 const PROTECTED_PATTERNS = [
     { method: 'DELETE', path: /^\/api\/v1\/menu/ },
@@ -73,12 +79,68 @@ export const demoModeMiddleware = (req, res, next) => {
     next();
 };
 
+// Get client IP (works behind proxies like Render/Cloudflare)
+const getClientIP = (req) => {
+    return req.headers['cf-connecting-ip'] ||
+        req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+        req.ip ||
+        'unknown';
+};
+
 export const verifyAdminPin = (req, res) => {
     const { pin } = req.body;
+    const clientIP = getClientIP(req);
+    const now = Date.now();
 
-    if (pin === ADMIN_PIN) {
-        res.json({ success: true, message: 'PIN verified! Full admin access enabled.' });
+    // Get or create attempt record for this IP
+    let record = pinAttempts.get(clientIP);
+
+    // Clean up old records and check lockout
+    if (record) {
+        // Check if locked out
+        if (record.lockedUntil && now < record.lockedUntil) {
+            const remainingMins = Math.ceil((record.lockedUntil - now) / 60000);
+            return res.status(429).json({
+                success: false,
+                message: `Too many failed attempts. Try again in ${remainingMins} minute${remainingMins > 1 ? 's' : ''}.`,
+                retryAfter: remainingMins
+            });
+        }
+
+        // Reset if window expired
+        if (now - record.firstAttempt > WINDOW_MS) {
+            record = { attempts: 0, firstAttempt: now };
+        }
     } else {
-        res.status(401).json({ success: false, message: 'Invalid PIN' });
+        record = { attempts: 0, firstAttempt: now };
     }
+
+    // Check PIN
+    if (pin === ADMIN_PIN) {
+        // Success - clear attempts for this IP
+        pinAttempts.delete(clientIP);
+        return res.json({ success: true, message: 'PIN verified! Full admin access enabled.' });
+    }
+
+    // Failed attempt
+    record.attempts++;
+
+    if (record.attempts >= MAX_ATTEMPTS) {
+        // Lock out this IP
+        record.lockedUntil = now + LOCKOUT_MS;
+        pinAttempts.set(clientIP, record);
+        return res.status(429).json({
+            success: false,
+            message: 'Too many failed attempts. Locked out for 1 hour.',
+            retryAfter: 60
+        });
+    }
+
+    pinAttempts.set(clientIP, record);
+    const remaining = MAX_ATTEMPTS - record.attempts;
+
+    res.status(401).json({
+        success: false,
+        message: `Invalid PIN. ${remaining} attempt${remaining > 1 ? 's' : ''} remaining.`
+    });
 };
