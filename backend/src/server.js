@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import winston from 'winston';
@@ -149,6 +150,41 @@ app.use(demoModeMiddleware);
 
 // PIN verification endpoint
 app.post('/api/v1/verify-pin', verifyAdminPin);
+
+/**
+ * Rate Limiting - Protect against brute force and DDoS attacks
+ */
+// General API rate limit: 100 requests per 15 minutes per IP
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    message: 'Too many requests. Please try again later.',
+    retryAfter: 15
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Stricter rate limit for auth endpoints: 10 requests per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: {
+    success: false,
+    message: 'Too many login attempts. Please try again in 15 minutes.',
+    retryAfter: 15
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply general rate limit to all API routes
+app.use('/api/', generalLimiter);
+
+// Apply stricter limit to auth routes
+app.use('/api/v1/auth', authLimiter);
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
