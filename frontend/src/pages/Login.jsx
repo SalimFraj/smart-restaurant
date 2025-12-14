@@ -114,7 +114,7 @@ export default function Login() {
                   <span className="badge badge-warning badge-xs">Demo Mode</span>
                 </div>
                 <div className="text-xs">admin@smartrestaurant.com / admin123</div>
-                <div className="text-xs text-base-content/60 mt-1">
+                <div className="text-xs opacity-80 mt-1">
                   🔒 View-only in demo. Enter PIN for full access.
                 </div>
               </div>
