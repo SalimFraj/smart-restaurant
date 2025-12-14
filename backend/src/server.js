@@ -11,6 +11,7 @@ import { Server } from 'socket.io';
 import winston from 'winston';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { setupSocketIO } from './services/socketService.js';
+import { demoModeMiddleware, verifyAdminPin } from './middleware/demoMode.js';
 
 // Routes
 import authRoutes from './routes/authRoutes.js';
@@ -138,6 +139,12 @@ app.use((req, res, next) => {
   res.setHeader('X-Request-ID', req.id);
   next();
 });
+
+// Demo Mode Protection (blocks destructive actions without PIN)
+app.use(demoModeMiddleware);
+
+// PIN verification endpoint
+app.post('/api/v1/verify-pin', verifyAdminPin);
 
 // Routes
 app.use('/api/v1/auth', authRoutes);

@@ -32,7 +32,7 @@ export default function Login() {
               <h1 className="text-4xl font-extrabold mb-2 gradient-text">{t('login.title')}</h1>
               <p className="text-base-content/70">Welcome back! Please login to continue</p>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="form-control">
                 <label className="label">
@@ -73,9 +73,9 @@ export default function Login() {
               </div>
 
               <div className="form-control mt-8">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary btn-lg w-full rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all" 
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg w-full rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                   disabled={loading}
                 >
                   {loading ? (
@@ -105,12 +105,18 @@ export default function Login() {
             </p>
 
             <div className="alert alert-info mt-6 rounded-lg border border-info/20">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <div>
-                <div className="font-semibold">Admin Access</div>
+              <div className="flex-1">
+                <div className="font-semibold flex items-center gap-2">
+                  Admin Access
+                  <span className="badge badge-warning badge-xs">Demo Mode</span>
+                </div>
                 <div className="text-xs">admin@smartrestaurant.com / admin123</div>
+                <div className="text-xs text-base-content/60 mt-1">
+                  🔒 View-only in demo. Enter PIN for full access.
+                </div>
               </div>
             </div>
           </div>

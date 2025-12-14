@@ -10,6 +10,10 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: DEMO_MODE
+        value: true
+      - key: ADMIN_PIN
+        value: 23851
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET

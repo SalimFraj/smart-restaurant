@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../services/api';
+import api, { isDemoModeError, hasAdminPin } from '../../services/api';
 import { createMenuItemWithImage, updateMenuItemWithImage } from '../../services/uploadHelper';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import ConfirmModal from '../../components/ConfirmModal';
+import PinModal from '../../components/PinModal';
 
 export default function AdminMenu() {
   const [menuItems, setMenuItems] = useState([]);
@@ -16,6 +17,8 @@ export default function AdminMenu() {
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, itemId: null, itemName: '' });
   const [formSubmitting, setFormSubmitting] = useState(false); // Track form submission
   const [deleteLoading, setDeleteLoading] = useState(false); // Track delete action
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null); // Store action to retry after PIN
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -117,7 +120,13 @@ export default function AdminMenu() {
       });
       fetchMenuItems();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to save menu item');
+      if (isDemoModeError(error)) {
+        setPendingAction(() => () => handleSubmit(e));
+        setShowPinModal(true);
+        toast.error('🔒 Demo Mode: Enter PIN for full access');
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to save menu item');
+      }
     } finally {
       setFormSubmitting(false);
     }
@@ -162,7 +171,13 @@ export default function AdminMenu() {
       toast.success('Menu item deleted');
       fetchMenuItems();
     } catch (error) {
-      toast.error('Failed to delete menu item');
+      if (isDemoModeError(error)) {
+        setPendingAction(() => confirmDelete);
+        setShowPinModal(true);
+        toast.error('🔒 Demo Mode: Enter PIN for full access');
+      } else {
+        toast.error('Failed to delete menu item');
+      }
     } finally {
       setDeleteLoading(false);
       setDeleteModal({ isOpen: false, itemId: null, itemName: '' });
@@ -451,6 +466,23 @@ export default function AdminMenu() {
         cancelText="Cancel"
         icon="🗑️"
         loading={deleteLoading}
+      />
+
+      {/* PIN Modal for Demo Mode */}
+      <PinModal
+        isOpen={showPinModal}
+        onClose={() => {
+          setShowPinModal(false);
+          setPendingAction(null);
+        }}
+        onSuccess={() => {
+          toast.success('🔓 Admin access unlocked!');
+          // Retry the pending action
+          if (pendingAction) {
+            pendingAction();
+            setPendingAction(null);
+          }
+        }}
       />
     </div>
   );
