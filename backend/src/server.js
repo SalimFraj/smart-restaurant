@@ -167,10 +167,11 @@ const generalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Stricter rate limit for auth endpoints: 10 requests per 15 minutes per IP
+// Auth rate limit: 30 requests per 15 minutes per IP
+// (higher limit to accommodate mobile carrier NAT where many users share one IP)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 30,
   message: {
     success: false,
     message: 'Too many login attempts. Please try again in 15 minutes.',
@@ -178,6 +179,8 @@ const authLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  // Skip rate limiting for successful requests (only count failures)
+  skipSuccessfulRequests: true,
 });
 
 // Apply general rate limit to all API routes
