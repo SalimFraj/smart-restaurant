@@ -1,18 +1,56 @@
 {
-  "name": "Smart Restaurant",
-  "short_name": "Restaurant",
-  "description": "Smart Restaurant Management System with AI-powered recommendations",
+  "name": "Jr's Grill",
+  "short_name": "Jr's Grill",
+  "description": "Premium Steakhouse with online ordering, reservations, and AI-powered recommendations",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1f7ef8",
+  "background_color": "#1a1a1a",
+  "theme_color": "#dc2626",
   "orientation": "portrait-primary",
+  "scope": "/",
   "icons": [
+    {
+      "src": "/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-512x512.png",
@@ -21,29 +59,74 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["food", "lifestyle", "business"]
-,
+  "categories": [
+    "food",
+    "lifestyle",
+    "business"
+  ],
   "shortcuts": [
     {
-      "name": "Menu",
+      "name": "View Menu",
       "short_name": "Menu",
-      "description": "Browse our menu",
+      "description": "Browse our delicious menu",
       "url": "/menu",
-      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
-      "name": "Cart",
+      "name": "My Cart",
       "short_name": "Cart",
-      "description": "View your cart",
+      "description": "View your shopping cart",
       "url": "/cart",
-      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
-      "name": "Orders",
+      "name": "My Orders",
       "short_name": "Orders",
-      "description": "View your orders",
+      "description": "Track your orders",
       "url": "/orders",
-      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Book a Table",
+      "short_name": "Reserve",
+      "description": "Make a reservation",
+      "url": "/reservations",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "prefer_related_applications": false
 }
