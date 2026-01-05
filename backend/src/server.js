@@ -55,6 +55,12 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-super-secret-jwt
 }
 
 const app = express();
+
+// Trust proxy is required when running behind a load balancer (like Render, Heroku, Nginx)
+// This ensures that req.ip gets the real client IP instead of the load balancer's IP
+// and prevents the ERR_ERL_UNEXPECTED_X_FORWARDED_FOR error from express-rate-limit
+app.set('trust proxy', 1);
+
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
