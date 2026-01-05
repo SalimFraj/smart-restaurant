@@ -69,8 +69,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const allowedOrigins = [
   FRONTEND_URL,
   'http://localhost:5173',
-  'http://localhost:3000',
-  'https://smart-restaurant-79sx934nb-salim-frajs-projects.vercel.app'
+  'http://localhost:3000'
 ].filter(Boolean);
 
 // Socket.IO Setup
@@ -115,7 +114,9 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, Postman, curl, etc.)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+
+    // Check if origin is allowed or if it's a Vercel preview deployment
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       callback(null, origin); // Return the actual origin, not true
     } else {
       console.log('CORS blocked origin:', origin);
