@@ -125,12 +125,12 @@ export default function Menu() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
-          className="text-center mb-8 sm:mb-12"
+          className="text-center mb-12"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
-          <h1 className="text-3xl sm:text-5xl font-bold gradient-text mb-2 sm:mb-4">Our Menu</h1>
-          <p className="text-base sm:text-lg text-base-content/70">Discover our delicious selection of dishes</p>
+          <h1 className="text-5xl font-bold gradient-text mb-4">Our Menu</h1>
+          <p className="text-lg text-base-content/70">Discover our delicious selection of dishes</p>
         </motion.div>
 
         {/* AI Recommendations */}
@@ -141,28 +141,28 @@ export default function Menu() {
             animate={{ y: 0, opacity: 1 }}
           >
             <div className="card glass shadow-xl">
-              <div className="card-body p-4 sm:p-6">
-                <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                  <span className="text-xl sm:text-2xl">🤖</span>
-                  <h2 className="card-title text-base sm:text-lg gradient-text">AI Recommendations</h2>
+              <div className="card-body">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-2xl">🤖</span>
+                  <h2 className="card-title gradient-text">AI Recommendations for You</h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {recommendations.slice(0, 3).map((item) => (
-                    <div key={item._id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-base-200/50 rounded-lg hover:bg-base-200 transition-colors">
+                    <div key={item._id} className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200 transition-colors">
                       <img
                         loading="lazy"
                         src={item.image || '/placeholder-food.png'}
                         alt={item.name}
-                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0"
+                        className="w-16 h-16 rounded-lg object-cover"
                         onError={(e) => { e.target.src = '/placeholder-food.png'; }}
                       />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm sm:text-base truncate">{item.name}</p>
-                        <p className="text-xs sm:text-sm text-base-content/60">${item.price}</p>
+                      <div className="flex-1">
+                        <p className="font-semibold">{item.name}</p>
+                        <p className="text-sm text-base-content/60">${item.price}</p>
                       </div>
                       <button
                         onClick={() => handleAddToCart(item)}
-                        className="btn btn-xs sm:btn-sm btn-primary"
+                        className="btn btn-sm btn-primary"
                       >
                         Add
                       </button>
@@ -382,8 +382,8 @@ export default function Menu() {
                       </div>
                     </div>
                   ) : (
-                    <div className="card card-side bg-base-100 shadow-xl hover-lift flex-col sm:flex-row">
-                      <figure className="w-full sm:w-32 md:w-48 h-32 sm:h-full flex-shrink-0">
+                    <div className="card card-side bg-base-100 shadow-xl hover-lift">
+                      <figure className="w-48 h-full">
                         <img
                           loading="lazy"
                           src={item.image || '/placeholder-food.png'}
@@ -392,36 +392,28 @@ export default function Menu() {
                           onError={(e) => { e.target.src = '/placeholder-food.png'; }}
                         />
                       </figure>
-                      <div className="card-body p-4 flex-col sm:flex-row justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between sm:block">
-                            <h2 className="card-title text-base sm:text-lg mb-1 sm:mb-2">{item.name}</h2>
-                            <button
-                              onClick={() => toggleFavorite(item._id)}
-                              className="btn btn-circle btn-xs sm:btn-sm btn-ghost sm:hidden"
-                            >
-                              {isFavorite(item._id) ? '❤️' : '🤍'}
-                            </button>
-                          </div>
-                          <p className="text-sm text-base-content/70 mb-2 line-clamp-2">{item.description}</p>
+                      <div className="card-body flex-row justify-between">
+                        <div className="flex-1">
+                          <h2 className="card-title mb-2">{item.name}</h2>
+                          <p className="text-base-content/70 mb-2">{item.description}</p>
                           <div className="flex flex-wrap gap-1">
-                            {item.dietary?.vegan && <span className="badge badge-success badge-xs sm:badge-sm">🌱 Vegan</span>}
-                            {item.dietary?.vegetarian && <span className="badge badge-info badge-xs sm:badge-sm">🥗 Veg</span>}
-                            {item.dietary?.glutenFree && <span className="badge badge-warning badge-xs sm:badge-sm">🌾 GF</span>}
-                            {item.dietary?.spicy && <span className="badge badge-error badge-xs sm:badge-sm">🌶️ Spicy</span>}
+                            {item.dietary?.vegan && <span className="badge badge-success badge-sm">🌱 Vegan</span>}
+                            {item.dietary?.vegetarian && <span className="badge badge-info badge-sm">🥗 Vegetarian</span>}
+                            {item.dietary?.glutenFree && <span className="badge badge-warning badge-sm">🌾 Gluten-Free</span>}
+                            {item.dietary?.spicy && <span className="badge badge-error badge-sm">🌶️ Spicy</span>}
                           </div>
                         </div>
-                        <div className="flex sm:flex-col justify-between sm:justify-between items-center sm:items-end gap-2">
+                        <div className="flex flex-col justify-between items-end">
                           <button
                             onClick={() => toggleFavorite(item._id)}
-                            className="btn btn-circle btn-sm btn-ghost hidden sm:flex"
+                            className="btn btn-circle btn-sm btn-ghost"
                           >
                             {isFavorite(item._id) ? '❤️' : '🤍'}
                           </button>
-                          <span className="text-xl sm:text-2xl font-bold text-primary">${item.price}</span>
+                          <span className="text-2xl font-bold text-primary">${item.price}</span>
                           <button
                             onClick={() => handleAddToCart(item)}
-                            className="btn btn-sm sm:btn-md btn-primary"
+                            className="btn btn-primary"
                           >
                             Add to Cart
                           </button>
