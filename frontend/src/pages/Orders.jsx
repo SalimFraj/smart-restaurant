@@ -46,8 +46,8 @@ export default function Orders() {
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-5xl font-extrabold mb-2 gradient-text">{t('orders.title')}</h1>
-        <p className="text-lg text-base-content/70">Track and manage all your orders</p>
+        <h1 className="text-3xl sm:text-5xl font-extrabold mb-2 gradient-text">{t('orders.title')}</h1>
+        <p className="text-base sm:text-lg text-base-content/70">Track and manage all your orders</p>
       </div>
 
       {orders.length === 0 ? (
@@ -70,29 +70,29 @@ export default function Orders() {
               className="card bg-base-100 shadow-xl card-hover animate-scale-in"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <div className="card-body p-6">
-                <div className="flex justify-between items-start mb-6">
+              <div className="card-body p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0 mb-4 sm:mb-6">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                        <span className="text-2xl">📦</span>
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                        <span className="text-lg sm:text-2xl">📦</span>
                       </div>
                       <div>
-                        <h2 className="card-title text-2xl">Order #{order._id.slice(-6).toUpperCase()}</h2>
-                        <p className="text-sm text-base-content/70 flex items-center gap-2 mt-1">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <h2 className="card-title text-lg sm:text-2xl">Order #{order._id.slice(-6).toUpperCase()}</h2>
+                        <p className="text-xs sm:text-sm text-base-content/70 flex items-center gap-1 sm:gap-2 mt-1">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
-                          {new Date(order.createdAt).toLocaleString()}
+                          <span className="truncate max-w-[200px] sm:max-w-none">{new Date(order.createdAt).toLocaleString()}</span>
                         </p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className={`badge ${getStatusColor(order.status)} badge-lg shadow-lg capitalize`}>
+                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div className={`badge ${getStatusColor(order.status)} badge-md sm:badge-lg shadow-lg capitalize`}>
                       {order.status}
                     </div>
-                    <div className="badge badge-outline badge-lg">
+                    <div className="badge badge-outline badge-md sm:badge-lg">
                       {order.orderType === 'pickup' ? '🏃 Pickup' : '🚗 Delivery'}
                     </div>
                   </div>

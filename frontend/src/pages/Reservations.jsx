@@ -86,14 +86,14 @@ export default function Reservations() {
 
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-5xl font-extrabold mb-2 gradient-text">{t('reservations.title')}</h1>
-          <p className="text-lg text-base-content/70">Book and manage your table reservations</p>
+          <h1 className="text-3xl sm:text-5xl font-extrabold mb-2 gradient-text">{t('reservations.title')}</h1>
+          <p className="text-base sm:text-lg text-base-content/70">Book and manage your table reservations</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="btn btn-primary btn-lg shadow-xl hover:scale-105 transition-transform"
+          className="btn btn-primary sm:btn-lg shadow-xl hover:scale-105 transition-transform w-full sm:w-auto"
         >
           {showForm ? (
             <>
@@ -322,29 +322,29 @@ export default function Reservations() {
               className="card bg-base-100 shadow-xl card-hover animate-scale-in"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <div className="card-body p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-                      <span className="text-3xl">📅</span>
+              <div className="card-body p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4 sm:mb-6">
+                  <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg flex-shrink-0">
+                      <span className="text-xl sm:text-3xl">📅</span>
                     </div>
                     <div>
-                      <h2 className="card-title text-2xl mb-2">
+                      <h2 className="card-title text-lg sm:text-2xl mb-1 sm:mb-2">
                         {new Date(reservation.date).toLocaleDateString('en-US', {
-                          weekday: 'long',
+                          weekday: 'short',
                           year: 'numeric',
-                          month: 'long',
+                          month: 'short',
                           day: 'numeric'
                         })}
                       </h2>
-                      <div className="flex items-center gap-4 text-base-content/70">
-                        <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-base-content/70">
+                        <div className="flex items-center gap-1 sm:gap-2">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <span className="font-semibold">{reservation.time}</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
@@ -353,12 +353,12 @@ export default function Reservations() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <div className={`badge ${getStatusColor(reservation.status)} badge-lg shadow-lg capitalize`}>
+                  <div className="flex flex-wrap gap-2 w-full sm:w-auto sm:flex-col sm:items-end">
+                    <div className={`badge ${getStatusColor(reservation.status)} badge-md sm:badge-lg shadow-lg capitalize`}>
                       {reservation.status}
                     </div>
                     {reservation.eventType && reservation.eventType !== 'regular' && (
-                      <div className="badge badge-secondary badge-lg">
+                      <div className="badge badge-secondary badge-md sm:badge-lg">
                         {reservation.eventType === 'birthday' && '🎂 Birthday'}
                         {reservation.eventType === 'corporate' && '💼 Corporate'}
                         {reservation.eventType === 'anniversary' && '💐 Anniversary'}

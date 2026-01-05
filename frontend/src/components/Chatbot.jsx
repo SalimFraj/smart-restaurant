@@ -121,7 +121,7 @@ export default function Chatbot() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-base-100 shadow-2xl rounded-2xl flex flex-col z-50 border border-base-300 overflow-hidden animate-scale-in">
+    <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 sm:h-[600px] w-full h-full bg-base-100 shadow-2xl sm:rounded-2xl flex flex-col z-50 border-0 sm:border sm:border-base-300 overflow-hidden animate-scale-in">
       <div className="bg-gradient-to-r from-primary to-secondary text-primary-content p-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
