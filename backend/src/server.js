@@ -69,7 +69,8 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const allowedOrigins = [
   FRONTEND_URL,
   'http://localhost:5173',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'https://smart-restaurant-79sx934nb-salim-frajs-projects.vercel.app'
 ].filter(Boolean);
 
 // Socket.IO Setup
