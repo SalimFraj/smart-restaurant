@@ -140,95 +140,70 @@ export default function NotificationCenter() {
 
                             {/* Dropdown Panel - Full screen on mobile, positioned dropdown on desktop */}
                             <motion.div
-                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                initial={{ opacity: 0, y: 20, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                exit={{ opacity: 0, y: 20, scale: 0.95 }}
                                 transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                                className="fixed inset-0 sm:inset-auto sm:absolute sm:right-0 sm:mt-2 w-full sm:w-[380px] md:w-[420px] bg-base-100 sm:rounded-2xl shadow-2xl z-50 flex flex-col border-none sm:border border-base-300/50 overflow-hidden sm:max-h-[680px]"
+                                className="fixed inset-x-0 bottom-0 sm:inset-auto sm:absolute sm:right-0 sm:mt-2 w-full sm:w-[380px] md:w-[420px] bg-base-100 rounded-t-2xl sm:rounded-2xl shadow-2xl z-50 max-h-[85vh] sm:max-h-[680px] flex flex-col border-t sm:border border-base-300/50 overflow-hidden"
                             >
                                 {/* Gradient Header */}
-                                <div className="bg-gradient-to-r from-primary to-secondary p-4 sm:p-6 text-primary-content flex-shrink-0">
-                                    <div className="flex items-center justify-between mb-4">
+                                <div className="bg-gradient-to-r from-primary to-secondary p-4 sm:p-6 text-primary-content">
+                                    {/* Mobile drag handle */}
+                                    <div className="w-12 h-1 bg-white/30 rounded-full mx-auto mb-3 sm:hidden" />
+
+                                    <div className="flex items-center justify-between mb-3 sm:mb-4">
                                         <div>
-                                            <h3 className="text-2xl font-bold flex items-center gap-2">
-                                                Notifications
-                                            </h3>
-                                            <p className="text-sm opacity-90 mt-1">
+                                            <h3 className="text-lg sm:text-2xl font-bold">Notifications</h3>
+                                            <p className="text-xs sm:text-sm opacity-90 mt-0.5 sm:mt-1">
                                                 {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up! 🎉'}
                                             </p>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            {/* Mobile Close Button */}
-                                            <button
-                                                onClick={() => setIsOpen(false)}
-                                                className="btn btn-sm btn-circle btn-ghost bg-white/20 text-white hover:bg-white/30 sm:hidden"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </svg>
-                                            </button>
-
-                                            {notifications.length > 0 && (
-                                                <div className="flex gap-2 hidden sm:flex">
-                                                    {unreadCount > 0 && (
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.05 }}
-                                                            whileTap={{ scale: 0.95 }}
-                                                            onClick={markAllAsRead}
-                                                            className="btn btn-sm btn-ghost text-primary-content hover:bg-white/20"
-                                                        >
-                                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                            Mark all read
-                                                        </motion.button>
-                                                    )}
+                                        {notifications.length > 0 && (
+                                            <div className="flex gap-1 sm:gap-2">
+                                                {unreadCount > 0 && (
                                                     <motion.button
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
-                                                        onClick={clearAll}
-                                                        className="btn btn-sm btn-ghost text-primary-content hover:bg-white/20"
+                                                        onClick={markAllAsRead}
+                                                        className="btn btn-xs sm:btn-sm btn-ghost text-primary-content hover:bg-white/20"
                                                     >
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        <svg className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                         </svg>
+                                                        <span className="hidden sm:inline">Mark all read</span>
                                                     </motion.button>
-                                                </div>
-                                            )}
-                                        </div>
+                                                )}
+                                                <motion.button
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={clearAll}
+                                                    className="btn btn-xs sm:btn-sm btn-ghost text-primary-content hover:bg-white/20"
+                                                >
+                                                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </motion.button>
+                                            </div>
+                                        )}
                                     </div>
 
-                                    {/* Mobile Actions Row */}
-                                    {notifications.length > 0 && (
-                                        <div className="flex gap-2 sm:hidden mb-4">
-                                            {unreadCount > 0 && (
-                                                <button onClick={markAllAsRead} className="btn btn-xs bg-white/20 border-0 text-white hover:bg-white/30 flex-1">
-                                                    Mark all read
-                                                </button>
-                                            )}
-                                            <button onClick={clearAll} className="btn btn-xs bg-white/20 border-0 text-white hover:bg-white/30 flex-1">
-                                                Clear all
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {/* Category Filters */}
-                                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                                    {/* Category Filters - Scrollable on mobile */}
+                                    <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-2 scrollbar-hide -mx-1 px-1">
                                         {categories.map((cat) => (
                                             <motion.button
                                                 key={cat.key}
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
                                                 onClick={() => setFilter(cat.key)}
-                                                className={`btn btn-sm ${filter === cat.key
+                                                className={`btn btn-xs sm:btn-sm ${filter === cat.key
                                                     ? 'bg-white text-primary'
                                                     : 'btn-ghost text-primary-content hover:bg-white/20'
                                                     } whitespace-nowrap`}
                                             >
-                                                <span className="mr-1">{cat.icon}</span>
-                                                {cat.label}
+                                                <span className="mr-0.5 sm:mr-1">{cat.icon}</span>
+                                                <span className="text-xs sm:text-sm">{cat.label}</span>
                                                 {cat.key === 'unread' && unreadCount > 0 && (
-                                                    <span className="ml-1 badge badge-sm bg-primary text-primary-content">
+                                                    <span className="ml-0.5 sm:ml-1 badge badge-xs sm:badge-sm bg-primary text-primary-content">
                                                         {unreadCount}
                                                     </span>
                                                 )}
