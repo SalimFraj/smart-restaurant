@@ -90,39 +90,40 @@ export default function AdminReservations() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-6 sm:py-8">
       {/* Back Navigation */}
-      <Link to="/admin" className="btn btn-ghost gap-2 mb-6 hover:bg-base-200">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+      <Link to="/admin" className="btn btn-ghost btn-sm sm:btn-md gap-2 mb-4 sm:mb-6 hover:bg-base-200">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
         </svg>
+        <span className="hidden sm:inline">Back</span>
       </Link>
 
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-        <h1 className="text-4xl font-bold">{t('admin.reservations')}</h1>
-        <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-4 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-4xl font-bold">{t('admin.reservations')}</h1>
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
           {/* Sort Dropdown */}
           <select
-            className="select select-bordered"
+            className="select select-bordered select-sm sm:select-md"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="newest">📅 Newest First</option>
-            <option value="oldest">📅 Oldest First</option>
-            <option value="date-desc">🗓️ Reservation Date (Latest)</option>
-            <option value="date-asc">🗓️ Reservation Date (Earliest)</option>
+            <option value="newest">📅 Newest</option>
+            <option value="oldest">📅 Oldest</option>
+            <option value="date-desc">🗓️ Latest Date</option>
+            <option value="date-asc">🗓️ Earliest Date</option>
             <option value="guests-desc">👥 Most Guests</option>
             <option value="guests-asc">👥 Fewest Guests</option>
             <option value="status">📊 By Status</option>
           </select>
           <input
             type="date"
-            className="input input-bordered"
+            className="input input-bordered input-sm sm:input-md"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
           />
           <select
-            className="select select-bordered"
+            className="select select-bordered select-sm sm:select-md col-span-2 sm:col-span-1"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -139,29 +140,29 @@ export default function AdminReservations() {
       <div className="space-y-4">
         {sortedReservations.map(reservation => (
           <div key={reservation._id} className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <div className="flex justify-between items-start mb-4">
+            <div className="card-body p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
                 <div>
-                  <h2 className="card-title">
+                  <h2 className="card-title text-base sm:text-lg">
                     {new Date(reservation.date).toLocaleDateString()} at {reservation.time}
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     {reservation.guests} {reservation.guests === 1 ? 'guest' : 'guests'}
                   </p>
-                  <p className="text-sm">
-                    <strong>Customer:</strong> {reservation.user?.name || 'N/A'} ({reservation.user?.email || reservation.contactEmail})
+                  <p className="text-xs sm:text-sm mt-1 truncate max-w-[250px] sm:max-w-none">
+                    <strong>Customer:</strong> {reservation.user?.name || 'N/A'}
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 items-end">
-                  <div className={`badge ${getStatusColor(reservation.status)} badge-lg`}>
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                  <div className={`badge ${getStatusColor(reservation.status)} badge-sm sm:badge-lg capitalize`}>
                     {reservation.status}
                   </div>
                   {reservation.eventType && reservation.eventType !== 'regular' && (
-                    <div className="badge badge-secondary badge-lg">
+                    <div className="badge badge-secondary badge-sm sm:badge-lg">
                       {reservation.eventType === 'birthday' && '🎂 Birthday'}
                       {reservation.eventType === 'corporate' && '💼 Corporate'}
                       {reservation.eventType === 'anniversary' && '💐 Anniversary'}
-                      {reservation.eventType === 'other' && '✨ Special Event'}
+                      {reservation.eventType === 'other' && '✨ Special'}
                     </div>
                   )}
                 </div>

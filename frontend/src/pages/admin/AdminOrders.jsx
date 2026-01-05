@@ -61,19 +61,19 @@ export default function AdminOrders() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-6 sm:py-8">
       {/* Back Navigation */}
-      <Link to="/admin" className="btn btn-ghost gap-2 mb-6 hover:bg-base-200">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+      <Link to="/admin" className="btn btn-ghost btn-sm sm:btn-md gap-2 mb-4 sm:mb-6 hover:bg-base-200">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
         </svg>
-
+        <span className="hidden sm:inline">Back</span>
       </Link>
 
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">{t('admin.orders')}</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-4xl font-bold">{t('admin.orders')}</h1>
         <select
-          className="select select-bordered"
+          className="select select-bordered select-sm sm:select-md w-full sm:w-auto"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -89,22 +89,22 @@ export default function AdminOrders() {
       <div className="space-y-4">
         {orders.map(order => (
           <div key={order._id} className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <div className="flex justify-between items-start mb-4">
+            <div className="card-body p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
                 <div>
-                  <h2 className="card-title">Order #{order._id.slice(-6)}</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="card-title text-base sm:text-lg">Order #{order._id.slice(-6)}</h2>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     {new Date(order.createdAt).toLocaleString()}
                   </p>
-                  <p className="text-sm">
-                    <strong>Customer:</strong> {order.user?.name || 'N/A'} ({order.user?.email || 'N/A'})
+                  <p className="text-xs sm:text-sm mt-1">
+                    <strong>Customer:</strong> <span className="truncate">{order.user?.name || 'N/A'}</span>
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className={`badge ${getStatusColor(order.status)} badge-lg`}>
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  <div className={`badge ${getStatusColor(order.status)} badge-sm sm:badge-lg capitalize`}>
                     {order.status}
                   </div>
-                  <div className="badge badge-outline badge-lg">
+                  <div className="badge badge-outline badge-sm sm:badge-lg">
                     {order.orderType === 'pickup' ? '🏃 Pickup' : '🚗 Delivery'}
                   </div>
                 </div>

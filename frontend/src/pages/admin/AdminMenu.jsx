@@ -189,17 +189,17 @@ export default function AdminMenu() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-6 sm:py-8">
       {/* Back Navigation */}
-      <Link to="/admin" className="btn btn-ghost gap-2 mb-6 hover:bg-base-200">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+      <Link to="/admin" className="btn btn-ghost btn-sm sm:btn-md gap-2 mb-4 sm:mb-6 hover:bg-base-200">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
         </svg>
-
+        <span className="hidden sm:inline">Back</span>
       </Link>
 
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">{t('admin.menu')}</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-4xl font-bold">{t('admin.menu')}</h1>
         <button onClick={() => {
           setShowForm(!showForm);
           setEditingItem(null);
@@ -214,15 +214,15 @@ export default function AdminMenu() {
             ingredients: '',
             available: true
           });
-        }} className="btn btn-primary">
+        }} className="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
           {showForm ? 'Cancel' : 'Add New Item'}
         </button>
       </div>
 
       {showForm && (
-        <div className="card bg-base-100 shadow-xl mb-8">
-          <div className="card-body">
-            <h2 className="card-title">{editingItem ? 'Edit' : 'Add'} Menu Item</h2>
+        <div className="card bg-base-100 shadow-xl mb-6 sm:mb-8">
+          <div className="card-body p-4 sm:p-6">
+            <h2 className="card-title text-lg sm:text-xl">{editingItem ? 'Edit' : 'Add'} Menu Item</h2>
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="form-control md:col-span-2">
@@ -416,37 +416,37 @@ export default function AdminMenu() {
         </div>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <table className="table table-zebra w-full text-xs sm:text-sm">
           <thead>
             <tr>
-              <th>Image</th>
+              <th className="hidden sm:table-cell">Image</th>
               <th>Name</th>
-              <th>Category</th>
+              <th className="hidden md:table-cell">Category</th>
               <th>Price</th>
-              <th>Available</th>
+              <th className="hidden sm:table-cell">Avail</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {menuItems.map(item => (
               <tr key={item._id}>
-                <td>
+                <td className="hidden sm:table-cell">
                   <img
                     src={item.image || '/placeholder-food.png'}
                     alt={item.name}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-10 h-10 sm:w-16 sm:h-16 object-cover rounded"
                     onError={(e) => { e.target.src = '/placeholder-food.png'; }}
                   />
                 </td>
-                <td>{item.name}</td>
-                <td>{item.category}</td>
+                <td className="max-w-[100px] sm:max-w-none truncate">{item.name}</td>
+                <td className="hidden md:table-cell capitalize">{item.category}</td>
                 <td>${item.price}</td>
-                <td>{item.available ? '✅' : '❌'}</td>
+                <td className="hidden sm:table-cell">{item.available ? '✅' : '❌'}</td>
                 <td>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleEdit(item)} className="btn btn-sm btn-primary">Edit</button>
-                    <button onClick={() => handleDelete(item)} className="btn btn-sm btn-error">Delete</button>
+                  <div className="flex gap-1 sm:gap-2">
+                    <button onClick={() => handleEdit(item)} className="btn btn-xs sm:btn-sm btn-primary">Edit</button>
+                    <button onClick={() => handleDelete(item)} className="btn btn-xs sm:btn-sm btn-error">Del</button>
                   </div>
                 </td>
               </tr>
