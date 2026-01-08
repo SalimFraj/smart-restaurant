@@ -101,14 +101,18 @@ export default function NotificationCenter() {
 
                 {isOpen && (
                     <>
-                        {/* Backdrop */}
+                        {/* Backdrop - always fixed full screen */}
                         <div
-                            className="fixed inset-0 bg-black/30 z-40"
+                            className="fixed inset-0 bg-black/40 z-[9998]"
                             onClick={() => setIsOpen(false)}
                         />
 
-                        {/* Panel - Bottom sheet on mobile, dropdown on desktop */}
-                        <div className="fixed inset-x-0 bottom-0 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 w-full sm:w-96 bg-base-100 rounded-t-2xl sm:rounded-xl shadow-2xl z-50 max-h-[80vh] sm:max-h-[500px] flex flex-col overflow-hidden">
+                        {/* Panel - Fixed bottom on mobile, fixed top-right on desktop */}
+                        <div
+                            className="fixed z-[9999] bg-base-100 shadow-2xl overflow-hidden flex flex-col
+                                       left-0 right-0 bottom-0 max-h-[85vh] rounded-t-2xl
+                                       sm:left-auto sm:right-4 sm:top-16 sm:bottom-auto sm:w-96 sm:max-h-[500px] sm:rounded-xl"
+                        >
                             {/* Header */}
                             <div className="bg-gradient-to-r from-primary to-secondary p-4 text-primary-content flex-shrink-0">
                                 {/* Mobile drag handle */}
