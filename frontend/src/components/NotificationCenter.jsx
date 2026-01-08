@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { useNotificationStore } from '../store';
 import { useNavigate } from 'react-router-dom';
 
@@ -99,7 +99,7 @@ export default function NotificationCenter() {
                     )}
                 </button>
 
-                {isOpen && (
+                {isOpen && createPortal(
                     <>
                         {/* Backdrop - always fixed full screen */}
                         <div
@@ -109,8 +109,7 @@ export default function NotificationCenter() {
 
                         {/* Panel - Fixed bottom sheet on mobile/tablet, dropdown on desktop */}
                         <div
-                            className="fixed z-[9999] bg-base-100 shadow-2xl overflow-hidden flex flex-col
-                                       left-0 right-0 bottom-0 top-auto max-h-[85vh] rounded-t-2xl border-t border-base-300
+                            className="fixed left-0 right-0 bottom-0 top-auto z-[9999] bg-base-100 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] rounded-t-2xl border-t border-base-300
                                        lg:left-auto lg:right-4 lg:top-20 lg:bottom-auto lg:w-96 lg:max-h-[500px] lg:rounded-xl lg:border"
                         >
                             {/* Header */}
@@ -148,7 +147,7 @@ export default function NotificationCenter() {
                                         </button>
                                         <button
                                             onClick={() => setIsOpen(false)}
-                                            className="btn btn-xs btn-ghost text-primary-content sm:hidden"
+                                            className="btn btn-xs btn-ghost text-primary-content lg:hidden"
                                         >
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -236,7 +235,8 @@ export default function NotificationCenter() {
                                 )}
                             </div>
                         </div>
-                    </>
+                    </>,
+                    document.body
                 )}
             </div>
         </>
