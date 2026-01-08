@@ -27,16 +27,11 @@ export const register = async (req, res, next) => {
 
     const token = generateToken(user._id);
 
-    // Determine cookie settings
-    const isProduction = process.env.NODE_ENV === 'production' || process.env.Render_ENV === 'production';
-
     res.cookie('token', token, {
       httpOnly: true,
-      // Always use secure in production or if explicitly on HTTPS
-      secure: isProduction || req.secure || req.headers['x-forwarded-proto'] === 'https',
-      // Cross-site requires 'none', local development can use 'lax'
-      sameSite: (isProduction || req.secure || req.headers['x-forwarded-proto'] === 'https') ? 'none' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       ...(process.env.COOKIE_DOMAIN && { domain: process.env.COOKIE_DOMAIN })
     });
 
@@ -77,16 +72,11 @@ export const login = async (req, res, next) => {
 
     const token = generateToken(user._id);
 
-    // Determine cookie settings
-    const isProduction = process.env.NODE_ENV === 'production' || process.env.Render_ENV === 'production';
-
     res.cookie('token', token, {
       httpOnly: true,
-      // Always use secure in production or if explicitly on HTTPS
-      secure: isProduction || req.secure || req.headers['x-forwarded-proto'] === 'https',
-      // Cross-site requires 'none', local development can use 'lax'
-      sameSite: (isProduction || req.secure || req.headers['x-forwarded-proto'] === 'https') ? 'none' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       ...(process.env.COOKIE_DOMAIN && { domain: process.env.COOKIE_DOMAIN })
     });
 
@@ -106,13 +96,10 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  // Determine cookie settings
-  const isProduction = process.env.NODE_ENV === 'production' || process.env.Render_ENV === 'production';
-
   res.cookie('token', '', {
     httpOnly: true,
-    secure: isProduction || req.secure || req.headers['x-forwarded-proto'] === 'https',
-    sameSite: (isProduction || req.secure || req.headers['x-forwarded-proto'] === 'https') ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     expires: new Date(0)
   });
   res.json({ success: true, message: 'Logged out successfully' });
