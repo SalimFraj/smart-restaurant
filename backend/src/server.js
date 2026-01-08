@@ -56,6 +56,10 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-super-secret-jwt
 
 const app = express();
 const httpServer = createServer(app);
+
+// Trust proxy - required for express-rate-limit behind Render/Heroku/etc
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
