@@ -133,8 +133,8 @@ export default function Navbar() {
                 <Link
                   to="/admin"
                   className={`btn btn-ghost btn-sm md:btn-md rounded-lg transition-all duration-200 ${location.pathname.startsWith('/admin')
-                      ? 'bg-secondary/15 text-secondary font-semibold'
-                      : 'hover:bg-secondary/10 hover:text-secondary'
+                    ? 'bg-secondary/15 text-secondary font-semibold'
+                    : 'hover:bg-secondary/10 hover:text-secondary'
                     }`}
                 >
                   {t('nav.admin')}
@@ -149,7 +149,7 @@ export default function Navbar() {
           {/* Language Selector - Desktop only */}
           <div className="dropdown dropdown-end hidden lg:block">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle btn-sm hover:scale-105 transition-transform">
-              <span className="text-lg">{i18n.language === 'en' ? '🇺🇸' : '🇪🇸'}</span>
+              <span className="text-lg">{i18n.language === 'en' ? '🇺🇸' : i18n.language === 'es' ? '🇪🇸' : '🇫🇷'}</span>
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[100] w-36 p-2 shadow-xl border border-base-300 mt-2">
               <li>
@@ -166,6 +166,14 @@ export default function Navbar() {
                   className={`hover:bg-primary/10 rounded-lg text-sm ${i18n.language === 'es' ? 'bg-primary/10 text-primary' : ''}`}
                 >
                   🇪🇸 Español
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => changeLanguage('fr')}
+                  className={`hover:bg-primary/10 rounded-lg text-sm ${i18n.language === 'fr' ? 'bg-primary/10 text-primary' : ''}`}
+                >
+                  🇫🇷 Français
                 </button>
               </li>
             </ul>
@@ -387,6 +395,22 @@ export default function Navbar() {
               <span className="text-xl">🇪🇸</span>
               <span>Español</span>
               {i18n.language === 'es' && (
+                <svg className="w-4 h-4 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              )}
+            </button>
+            <button
+              onClick={() => {
+                changeLanguage('fr');
+                closeMobileMenu();
+              }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all ${i18n.language === 'fr' ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-base-200'
+                }`}
+            >
+              <span className="text-xl">🇫🇷</span>
+              <span>Français</span>
+              {i18n.language === 'fr' && (
                 <svg className="w-4 h-4 ml-auto" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>

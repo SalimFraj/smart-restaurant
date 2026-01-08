@@ -8,29 +8,29 @@ export default function Home() {
   const features = [
     {
       icon: '🥩',
-      title: 'Prime Cuts',
-      description: 'We serve only the finest USDA Prime beef, aged to perfection and grilled to your specification',
+      title: t('home.feature.primeCuts'),
+      description: t('home.feature.primeCutsDesc'),
       gradient: 'from-red-500 to-red-700',
     },
     {
       icon: '🔥',
-      title: 'Expert Grilling',
-      description: 'Our master grill chefs use traditional techniques to bring out the best flavors in every steak',
+      title: t('home.feature.expertGrilling'),
+      description: t('home.feature.expertGrillingDesc'),
       gradient: 'from-orange-500 to-amber-600',
     },
     {
       icon: '🏡',
-      title: 'Cozy Atmosphere',
-      description: 'Enjoy your meal in our warm, rustic dining room that feels just like home',
+      title: t('home.feature.cozyAtmosphere'),
+      description: t('home.feature.cozyAtmosphereDesc'),
       gradient: 'from-amber-600 to-yellow-700',
     },
   ];
 
   const stats = [
-    { value: '25+', label: 'Years Serving', icon: '⭐' },
-    { value: '10,000+', label: 'Steaks Grilled', icon: '🥩' },
-    { value: '4.9/5', label: 'Customer Rating', icon: '💯' },
-    { value: 'Local', label: 'Family Owned', icon: '🏡' },
+    { value: '25+', label: t('home.stats.yearsServing'), icon: '⭐' },
+    { value: '10,000+', label: t('home.stats.steaksGrilled'), icon: '🥩' },
+    { value: '4.9/5', label: t('home.stats.customerRating'), icon: '💯' },
+    { value: 'Local', label: t('home.stats.familyOwned'), icon: '🏡' },
   ];
 
   return (
@@ -81,7 +81,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Where Every Steak is Grilled to Perfection
+              {t('home.tagline')}
             </motion.p>
 
             <motion.p
@@ -90,7 +90,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              Your neighborhood steakhouse serving premium cuts, craft sides, and classic comfort food since 1998
+              {t('home.description')}
             </motion.p>
 
             <motion.div
@@ -103,7 +103,7 @@ export default function Home() {
                 to="/menu"
                 className="btn btn-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-none text-lg px-8 shadow-2xl hover-lift"
               >
-                View Our Steaks
+                {t('home.viewSteaks')}
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -112,7 +112,7 @@ export default function Home() {
                 to="/reservations"
                 className="btn btn-lg btn-outline text-white border-amber-300 border-2 hover:bg-amber-300 hover:text-stone-900 text-lg px-8 hover-lift"
               >
-                Reserve a Table
+                {t('home.reserveTable')}
               </Link>
             </motion.div>
           </motion.div>
@@ -169,11 +169,11 @@ export default function Home() {
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-red-600 via-amber-600 to-orange-600 bg-clip-text text-transparent">
-              The Jr's Grill Experience
+              {t('home.experience')}
             </span>
           </h2>
           <p className="text-lg text-base-content/70 max-w-2xl mx-auto">
-            What makes us your favorite neighborhood steakhouse
+            {t('home.experienceSubtitle')}
           </p>
         </motion.div>
 
@@ -213,10 +213,10 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Hungry for a Great Steak?
+              {t('home.hungryTitle')}
             </h2>
             <p className="text-xl text-amber-100 mb-8 max-w-2xl mx-auto">
-              Visit us tonight and taste why locals have made Jr's Grill their go-to steakhouse for over 25 years
+              {t('home.hungrySubtitle')}
             </p>
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -226,7 +226,7 @@ export default function Home() {
                 to="/menu"
                 className="btn btn-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white border-none px-12 shadow-xl text-lg"
               >
-                Order Now 🥩
+                {t('home.orderNow')} 🥩
               </Link>
             </motion.div>
           </motion.div>

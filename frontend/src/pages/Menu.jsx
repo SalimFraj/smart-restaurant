@@ -171,8 +171,8 @@ export default function Menu() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
-          <h1 className="text-5xl font-bold gradient-text mb-4">Our Menu</h1>
-          <p className="text-lg text-base-content/70">Discover our delicious selection of dishes</p>
+          <h1 className="text-5xl font-bold gradient-text mb-4">{t('menu.title')}</h1>
+          <p className="text-lg text-base-content/70">{t('menu.subtitle')}</p>
         </motion.div>
 
         {/* AI Recommendations */}
