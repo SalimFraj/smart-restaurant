@@ -107,16 +107,16 @@ export default function NotificationCenter() {
                             onClick={() => setIsOpen(false)}
                         />
 
-                        {/* Panel - Fixed bottom on mobile, fixed top-right on desktop */}
+                        {/* Panel - Fixed bottom sheet on mobile/tablet, dropdown on desktop */}
                         <div
                             className="fixed z-[9999] bg-base-100 shadow-2xl overflow-hidden flex flex-col
-                                       left-0 right-0 bottom-0 max-h-[85vh] rounded-t-2xl
-                                       sm:left-auto sm:right-4 sm:top-16 sm:bottom-auto sm:w-96 sm:max-h-[500px] sm:rounded-xl"
+                                       left-0 right-0 bottom-0 top-auto max-h-[85vh] rounded-t-2xl border-t border-base-300
+                                       lg:left-auto lg:right-4 lg:top-20 lg:bottom-auto lg:w-96 lg:max-h-[500px] lg:rounded-xl lg:border"
                         >
                             {/* Header */}
                             <div className="bg-gradient-to-r from-primary to-secondary p-4 text-primary-content flex-shrink-0">
                                 {/* Mobile drag handle */}
-                                <div className="w-10 h-1 bg-white/40 rounded-full mx-auto mb-3 sm:hidden" />
+                                <div className="w-10 h-1 bg-white/40 rounded-full mx-auto mb-3 lg:hidden" />
 
                                 <div className="flex items-center justify-between mb-3">
                                     <div>
