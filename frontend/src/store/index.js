@@ -73,6 +73,11 @@ export const useCartStore = create(
             getItemCount: () => {
                 return get().items.reduce((count, item) => count + item.quantity, 0);
             },
+
+            getItemQuantity: (itemId) => {
+                const item = get().items.find((i) => i._id === itemId);
+                return item ? item.quantity : 0;
+            },
         }),
         {
             name: 'cart-storage',

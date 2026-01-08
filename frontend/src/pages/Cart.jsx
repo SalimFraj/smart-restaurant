@@ -116,14 +116,14 @@ export default function Cart() {
     >
       <div className="container mx-auto px-4">
         <motion.h1
-          className="text-4xl font-bold gradient-text mb-8"
+          className="text-2xl sm:text-4xl font-bold gradient-text mb-6 sm:mb-8"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
           Shopping Cart ({getItemCount()} items)
         </motion.h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item, index) => (
@@ -134,49 +134,52 @@ export default function Cart() {
                 transition={{ delay: index * 0.1 }}
                 className="card bg-base-100 shadow-xl"
               >
-                <div className="card-body">
-                  <div className="flex gap-4">
+                <div className="card-body p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <img
                       loading="lazy"
                       src={item.image}
                       alt={item.name}
-                      className="w-24 h-24 rounded-lg object-cover"
+                      className="w-full sm:w-24 h-32 sm:h-24 rounded-lg object-cover"
                     />
-                    <div className="flex-1">
-                      <h3 className="card-title">{item.name}</h3>
-                      <p className="text-base-content/70 text-sm">{item.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        {item.isVegan && <span className="badge badge-success badge-sm">🌱 Vegan</span>}
-                        {item.isVegetarian && <span className="badge badge-info badge-sm">🥗 Veg</span>}
-                        {item.isGlutenFree && <span className="badge badge-warning badge-sm">🌾 GF</span>}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="card-title text-base sm:text-lg">{item.name}</h3>
+                      <p className="text-base-content/70 text-sm line-clamp-2">{item.description}</p>
+                      <div className="flex items-center gap-1 sm:gap-2 mt-2 flex-wrap">
+                        {item.isVegan && <span className="badge badge-success badge-xs sm:badge-sm">🌱 Vegan</span>}
+                        {item.isVegetarian && <span className="badge badge-info badge-xs sm:badge-sm">🥗 Veg</span>}
+                        {item.isGlutenFree && <span className="badge badge-warning badge-xs sm:badge-sm">🌾 GF</span>}
                       </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between">
-                      <button
-                        onClick={() => removeItem(item._id)}
-                        className="btn btn-ghost btn-sm btn-circle"
-                      >
-                        ✕
-                      </button>
-                      <p className="text-2xl font-bold text-primary">
+                    {/* Mobile: Row layout for price, quantity, and actions */}
+                    <div className="flex items-center justify-between gap-2 mt-3 sm:mt-0 sm:flex-col sm:items-end sm:justify-between sm:ml-2">
+                      <p className="text-lg sm:text-2xl font-bold text-primary">
                         ${(item.price * item.quantity).toFixed(2)}
                       </p>
-                      <div className="join">
-                        <button
-                          onClick={() => updateQuantity(item._id, item.quantity - 1)}
-                          className="btn btn-sm join-item"
-                          disabled={item.quantity <= 1}
-                        >
-                          -
-                        </button>
-                        <div className="join-item btn btn-sm pointer-events-none">
-                          {item.quantity}
+                      <div className="flex items-center gap-2">
+                        <div className="join">
+                          <button
+                            onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                            className="btn btn-sm join-item"
+                          >
+                            −
+                          </button>
+                          <div className="join-item btn btn-sm pointer-events-none min-w-[2.5rem]">
+                            {item.quantity}
+                          </div>
+                          <button
+                            onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                            className="btn btn-sm join-item"
+                          >
+                            +
+                          </button>
                         </div>
                         <button
-                          onClick={() => updateQuantity(item._id, item.quantity + 1)}
-                          className="btn btn-sm join-item"
+                          onClick={() => removeItem(item._id)}
+                          className="btn btn-ghost btn-sm btn-circle text-error"
+                          title="Remove item"
                         >
-                          +
+                          ✕
                         </button>
                       </div>
                     </div>

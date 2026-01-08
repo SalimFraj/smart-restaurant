@@ -10,7 +10,7 @@ import api from '../services/api';
 export default function Menu() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const addItem = useCartStore((state) => state.addItem);
+  const { items, addItem, updateQuantity, removeItem } = useCartStore();
   const { menuView, setMenuView } = useUIStore();
   const { favorites, toggleFavorite, isFavorite } = useFavoritesStore();
 
@@ -105,6 +105,48 @@ export default function Menu() {
     );
   };
 
+  // Get quantity of specific item in cart
+  const getItemQuantity = (itemId) => {
+    const item = items.find(i => i._id === itemId);
+    return item ? item.quantity : 0;
+  };
+
+  // Cart button component - shows Add or +/- controls
+  const CartButton = ({ item, size = 'sm' }) => {
+    const quantity = getItemQuantity(item._id);
+
+    if (quantity === 0) {
+      return (
+        <button
+          onClick={() => handleAddToCart(item)}
+          className={`btn btn-primary btn-${size}`}
+        >
+          Add to Cart
+        </button>
+      );
+    }
+
+    return (
+      <div className="join">
+        <button
+          onClick={() => updateQuantity(item._id, quantity - 1)}
+          className={`btn btn-${size} join-item btn-primary`}
+        >
+          −
+        </button>
+        <span className={`btn btn-${size} join-item pointer-events-none bg-primary text-primary-content border-primary min-w-[3rem]`}>
+          {quantity}
+        </span>
+        <button
+          onClick={() => updateQuantity(item._id, quantity + 1)}
+          className={`btn btn-${size} join-item btn-primary`}
+        >
+          +
+        </button>
+      </div>
+    );
+  };
+
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -160,12 +202,7 @@ export default function Menu() {
                         <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-base-content/60">${item.price}</p>
                       </div>
-                      <button
-                        onClick={() => handleAddToCart(item)}
-                        className="btn btn-sm btn-primary"
-                      >
-                        Add
-                      </button>
+                      <CartButton item={item} size="sm" />
                     </div>
                   ))}
                 </div>
@@ -372,12 +409,7 @@ export default function Menu() {
                         </div>
                         <div className="card-actions justify-between items-center mt-4">
                           <span className="text-2xl font-bold text-primary">${item.price}</span>
-                          <button
-                            onClick={() => handleAddToCart(item)}
-                            className="btn btn-primary btn-sm"
-                          >
-                            Add to Cart
-                          </button>
+                          <CartButton item={item} size="sm" />
                         </div>
                       </div>
                     </div>
@@ -411,12 +443,7 @@ export default function Menu() {
                             {isFavorite(item._id) ? '❤️' : '🤍'}
                           </button>
                           <span className="text-2xl font-bold text-primary">${item.price}</span>
-                          <button
-                            onClick={() => handleAddToCart(item)}
-                            className="btn btn-primary"
-                          >
-                            Add to Cart
-                          </button>
+                          <CartButton item={item} />
                         </div>
                       </div>
                     </div>
