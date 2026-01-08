@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { useCartStore } from '../store';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
 export default function Cart() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { items, updateQuantity, removeItem, clearCart, getTotal, getItemCount } = useCartStore();
   const [orderType, setOrderType] = useState('delivery');
   const [deliveryAddress, setDeliveryAddress] = useState('');
@@ -95,13 +97,13 @@ export default function Cart() {
           >
             <span className="text-9xl">🛒</span>
           </motion.div>
-          <h2 className="text-3xl font-bold mt-8 mb-4">Your cart is empty</h2>
-          <p className="text-base-content/70 mb-8">Add some delicious items to get started!</p>
+          <h2 className="text-3xl font-bold mt-8 mb-4">{t('cart.empty')}</h2>
+          <p className="text-base-content/70 mb-8">{t('cart.emptySubtitle')}</p>
           <button
             onClick={() => navigate('/menu')}
             className="btn btn-primary btn-lg"
           >
-            Browse Menu
+            {t('cart.browseMenu')}
           </button>
         </div>
       </motion.div>
@@ -120,7 +122,7 @@ export default function Cart() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
-          Shopping Cart ({getItemCount()} items)
+          {t('cart.title')} ({getItemCount()} {t('cart.items')})
         </motion.h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">

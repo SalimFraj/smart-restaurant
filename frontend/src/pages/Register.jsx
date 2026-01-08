@@ -36,13 +36,13 @@ export default function Register() {
                 <span className="text-4xl">✨</span>
               </div>
               <h1 className="text-4xl font-extrabold mb-2 gradient-text">{t('register.title')}</h1>
-              <p className="text-base-content/70">Create your account and start ordering</p>
+              <p className="text-base-content/70">{t('register.subtitle')}</p>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">Full Name *</span>
+                  <span className="label-text font-semibold">{t('register.name')} *</span>
                 </label>
                 <div className="relative">
                   <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@ export default function Register() {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">Email *</span>
+                  <span className="label-text font-semibold">{t('register.email')} *</span>
                 </label>
                 <div className="relative">
                   <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +80,7 @@ export default function Register() {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">Password *</span>
+                  <span className="label-text font-semibold">{t('register.password')} *</span>
                 </label>
                 <div className="relative">
                   <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,19 +139,19 @@ export default function Register() {
               </div>
 
               <div className="form-control mt-8">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary btn-lg w-full rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all" 
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg w-full rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                   disabled={loading}
                 >
                   {loading ? (
                     <>
                       <span className="loading loading-spinner"></span>
-                      Creating account...
+                      {t('register.creating')}
                     </>
                   ) : (
                     <>
-                      Create Account
+                      {t('register.submit')}
                       <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
@@ -161,12 +161,12 @@ export default function Register() {
               </div>
             </form>
 
-            <div className="divider my-6">OR</div>
+            <div className="divider my-6">{t('register.or')}</div>
 
             <p className="text-center text-sm">
-              Already have an account?{' '}
+              {t('register.hasAccount')}{' '}
               <Link to="/login" className="link link-primary font-semibold hover:underline">
-                Login here
+                {t('register.login')}
               </Link>
             </p>
           </div>

@@ -30,13 +30,13 @@ export default function Login() {
                 <span className="text-4xl">🍽️</span>
               </div>
               <h1 className="text-4xl font-extrabold mb-2 gradient-text">{t('login.title')}</h1>
-              <p className="text-base-content/70">Welcome back! Please login to continue</p>
+              <p className="text-base-content/70">{t('login.subtitle')}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">Email</span>
+                  <span className="label-text font-semibold">{t('login.email')}</span>
                 </label>
                 <div className="relative">
                   <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@ export default function Login() {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold">Password</span>
+                  <span className="label-text font-semibold">{t('login.password')}</span>
                 </label>
                 <div className="relative">
                   <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,11 +81,11 @@ export default function Login() {
                   {loading ? (
                     <>
                       <span className="loading loading-spinner"></span>
-                      Logging in...
+                      {t('login.loggingIn')}
                     </>
                   ) : (
                     <>
-                      Login
+                      {t('login.submit')}
                       <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
@@ -95,12 +95,12 @@ export default function Login() {
               </div>
             </form>
 
-            <div className="divider my-6">OR</div>
+            <div className="divider my-6">{t('login.or')}</div>
 
             <p className="text-center text-sm">
-              Don't have an account?{' '}
+              {t('login.noAccount')}{' '}
               <Link to="/register" className="link link-primary font-semibold hover:underline">
-                Register now
+                {t('login.signUp')}
               </Link>
             </p>
 
@@ -110,7 +110,7 @@ export default function Login() {
               </svg>
               <div className="flex-1">
                 <div className="font-semibold flex items-center gap-2">
-                  Admin Access
+                  {t('login.adminAccess')}
                   <span className="badge badge-warning badge-xs">Demo Mode</span>
                 </div>
                 <div className="text-xs">admin@smartrestaurant.com / admin123</div>
@@ -121,8 +121,8 @@ export default function Login() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 

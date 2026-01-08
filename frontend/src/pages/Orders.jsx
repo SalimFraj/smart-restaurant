@@ -47,19 +47,19 @@ export default function Orders() {
     <div className="container mx-auto px-4 py-8 animate-fade-in">
       <div className="mb-8">
         <h1 className="text-3xl sm:text-5xl font-extrabold mb-2 gradient-text">{t('orders.title')}</h1>
-        <p className="text-base sm:text-lg text-base-content/70">Track and manage all your orders</p>
+        <p className="text-base sm:text-lg text-base-content/70">{t('orders.subtitle')}</p>
       </div>
 
       {orders.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-8xl mb-6 animate-bounce">📦</div>
-          <h2 className="text-3xl font-bold mb-4">No orders yet</h2>
-          <p className="text-xl text-base-content/70 mb-8">Start ordering delicious food from our menu!</p>
+          <h2 className="text-3xl font-bold mb-4">{t('orders.noOrders')}</h2>
+          <p className="text-xl text-base-content/70 mb-8">{t('orders.noOrdersSubtitle')}</p>
           <a href="/menu" className="btn btn-primary btn-lg px-8 shadow-xl hover:scale-105 transition-transform">
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-            Browse Menu
+            {t('orders.startOrdering')}
           </a>
         </div>
       ) : (
