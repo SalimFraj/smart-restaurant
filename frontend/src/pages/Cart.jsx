@@ -199,13 +199,13 @@ export default function Cart() {
               className="card bg-base-100 shadow-xl sticky top-24"
             >
               <div className="card-body">
-                <h2 className="card-title mb-4">Order Summary</h2>
+                <h2 className="card-title mb-4">{t('cart.orderSummary')}</h2>
 
                 <form onSubmit={handleCheckout} noValidate>
                   {/* Order Type Selection */}
                   <div className="form-control mb-4">
                     <label className="label">
-                      <span className="label-text font-semibold">Order Type *</span>
+                      <span className="label-text font-semibold">{t('cart.orderType')} *</span>
                     </label>
                     <div className="flex gap-4">
                       <label className="label cursor-pointer flex-1 bg-base-200 rounded-lg p-3 border-2 border-transparent hover:border-primary transition-colors">
@@ -218,7 +218,7 @@ export default function Cart() {
                             checked={orderType === 'delivery'}
                             onChange={(e) => setOrderType(e.target.value)}
                           />
-                          <span className="label-text font-medium">🚗 Delivery</span>
+                          <span className="label-text font-medium">🚗 {t('cart.delivery')}</span>
                         </div>
                       </label>
                       <label className="label cursor-pointer flex-1 bg-base-200 rounded-lg p-3 border-2 border-transparent hover:border-primary transition-colors">
@@ -231,7 +231,7 @@ export default function Cart() {
                             checked={orderType === 'pickup'}
                             onChange={(e) => setOrderType(e.target.value)}
                           />
-                          <span className="label-text font-medium">🏃 Pickup</span>
+                          <span className="label-text font-medium">🏃 {t('cart.pickup')}</span>
                         </div>
                       </label>
                     </div>
@@ -241,11 +241,11 @@ export default function Cart() {
                   {orderType === 'delivery' && (
                     <div className="form-control mb-4">
                       <label className="label">
-                        <span className="label-text font-semibold">Delivery Address *</span>
+                        <span className="label-text font-semibold">{t('cart.deliveryAddress')} *</span>
                       </label>
                       <textarea
                         className="textarea textarea-bordered"
-                        placeholder="Enter your delivery address"
+                        placeholder={t('cart.enterAddress')}
                         value={deliveryAddress}
                         onChange={(e) => setDeliveryAddress(e.target.value)}
                         rows={3}
@@ -255,12 +255,12 @@ export default function Cart() {
 
                   <div className="form-control mb-4">
                     <label className="label">
-                      <span className="label-text font-semibold">Phone Number *</span>
+                      <span className="label-text font-semibold">{t('cart.phone')} *</span>
                     </label>
                     <input
                       type="tel"
                       className="input input-bordered"
-                      placeholder="Enter your phone number"
+                      placeholder={t('cart.enterPhone')}
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                     />
@@ -268,11 +268,11 @@ export default function Cart() {
 
                   <div className="form-control mb-4">
                     <label className="label">
-                      <span className="label-text font-semibold">Special Instructions</span>
+                      <span className="label-text font-semibold">{t('cart.specialInstructions')}</span>
                     </label>
                     <textarea
                       className="textarea textarea-bordered"
-                      placeholder="Any special requests? (optional)"
+                      placeholder={t('cart.optional')}
                       value={specialInstructions}
                       onChange={(e) => setSpecialInstructions(e.target.value)}
                       rows={2}
@@ -283,20 +283,20 @@ export default function Cart() {
 
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between text-base-content/70">
-                      <span>Subtotal</span>
+                      <span>{t('cart.subtotal')}</span>
                       <span>${getTotal().toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-base-content/70">
-                      <span>Delivery Fee</span>
+                      <span>{t('cart.deliveryFee')}</span>
                       <span>$5.00</span>
                     </div>
                     <div className="flex justify-between text-base-content/70">
-                      <span>Tax (10%)</span>
+                      <span>{t('cart.tax')} (10%)</span>
                       <span>${(getTotal() * 0.1).toFixed(2)}</span>
                     </div>
                     <div className="divider my-2"></div>
                     <div className="flex justify-between text-xl font-bold">
-                      <span>Total</span>
+                      <span>{t('cart.total')}</span>
                       <span className="text-primary">
                         ${(getTotal() + 5 + getTotal() * 0.1).toFixed(2)}
                       </span>
@@ -311,10 +311,10 @@ export default function Cart() {
                     {createOrderMutation.isPending ? (
                       <>
                         <span className="loading loading-spinner"></span>
-                        Processing...
+                        {t('cart.processing')}
                       </>
                     ) : (
-                      'Place Order'
+                      t('cart.placeOrder')
                     )}
                   </button>
 
@@ -323,7 +323,7 @@ export default function Cart() {
                     onClick={() => navigate('/menu')}
                     className="btn btn-ghost w-full mt-2"
                   >
-                    Continue Shopping
+                    {t('cart.continueShopping')}
                   </button>
                 </form>
               </div>

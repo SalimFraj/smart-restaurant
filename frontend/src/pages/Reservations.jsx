@@ -89,7 +89,7 @@ export default function Reservations() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl sm:text-5xl font-extrabold mb-2 gradient-text">{t('reservations.title')}</h1>
-          <p className="text-base sm:text-lg text-base-content/70">Book and manage your table reservations</p>
+          <p className="text-base sm:text-lg text-base-content/70">{t('reservations.subtitle')}</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -100,14 +100,14 @@ export default function Reservations() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              Cancel
+              {t('admin.cancel')}
             </>
           ) : (
             <>
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              New Reservation
+              {t('reservations.makeReservation')}
             </>
           )}
         </button>
@@ -126,7 +126,7 @@ export default function Reservations() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-semibold">Date *</span>
+                    <span className="label-text font-semibold">{t('reservations.date')} *</span>
                   </label>
                   <div className="relative">
                     <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@ export default function Reservations() {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-semibold">Time *</span>
+                    <span className="label-text font-semibold">{t('reservations.time')} *</span>
                   </label>
                   <div className="relative">
                     <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +163,7 @@ export default function Reservations() {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-semibold">Number of Guests *</span>
+                    <span className="label-text font-semibold">{t('reservations.numberOfGuests')} *</span>
                   </label>
                   <div className="relative">
                     <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,7 +289,7 @@ export default function Reservations() {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Create Reservation
+                  {t('reservations.confirm')}
                 </button>
               </div>
             </form>
@@ -300,8 +300,8 @@ export default function Reservations() {
       {reservations.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-8xl mb-6 animate-bounce">📅</div>
-          <h2 className="text-3xl font-bold mb-4">No reservations yet</h2>
-          <p className="text-xl text-base-content/70 mb-8">Book your table and enjoy a great dining experience!</p>
+          <h2 className="text-3xl font-bold mb-4">{t('reservations.noReservations')}</h2>
+          <p className="text-xl text-base-content/70 mb-8">{t('reservations.noReservationsSubtitle')}</p>
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
@@ -310,7 +310,7 @@ export default function Reservations() {
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              Make Your First Reservation
+              {t('reservations.bookTable')}
             </button>
           )}
         </div>
