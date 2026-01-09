@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 import {
     getProfile,
     updateProfile,
@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // All routes require authentication
-router.use(protect);
+router.use(authenticate);
 
 // Profile routes
 router.get('/', getProfile);
