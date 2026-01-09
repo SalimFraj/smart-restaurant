@@ -54,13 +54,20 @@ export default function Chatbot() {
     setInput('');
     setLoading(true);
 
+    // Get conversation history (exclude the message we're about to send)
+    const currentMessages = [...messages, userMessage];
+
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
       const response = await fetch(`${apiUrl}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: messageToSend })
+        // Pass conversation history for context-aware responses
+        body: JSON.stringify({
+          message: messageToSend,
+          history: currentMessages.slice(-10) // Last 10 messages for context
+        })
       });
 
       if (!response.ok) {

@@ -128,7 +128,7 @@ export const getRecommendations = async (userHistory, menuItems) => {
       ? `User's past orders: ${userHistory.map(h => h.name).join(', ')}`
       : 'No order history available.';
 
-    const menuText = menuItems.map(item => 
+    const menuText = menuItems.map(item =>
       `${item.name} ($${item.price}) - ${item.description} - Categories: ${item.category} - Dietary: ${item.dietary.vegan ? 'Vegan' : ''} ${item.dietary.vegetarian ? 'Vegetarian' : ''} ${item.dietary.glutenFree ? 'Gluten-free' : ''} ${item.dietary.spicy ? 'Spicy' : ''}`
     ).join('\n');
 
@@ -158,7 +158,7 @@ Provide exactly 5 recommendations as a JSON array of dish names only, no explana
 
     const response = completion.choices[0]?.message?.content || '[]';
     let recommendations = [];
-    
+
     try {
       recommendations = JSON.parse(response);
       if (!Array.isArray(recommendations)) {
@@ -183,7 +183,7 @@ Provide exactly 5 recommendations as a JSON array of dish names only, no explana
   }
 };
 
-export const getChatResponse = async (message, menuItems, reservations) => {
+export const getChatResponse = async (message, menuItems, reservations, conversationHistory = []) => {
   try {
     const groqClient = getGroqClient();
     if (!groqClient) {
@@ -193,14 +193,15 @@ export const getChatResponse = async (message, menuItems, reservations) => {
     if (!model) {
       throw new Error('GROQ_MODEL is not configured. Please set GROQ_MODEL in your .env to a model id you have access to.');
     }
-    const menuText = menuItems.map(item => 
+    const menuText = menuItems.map(item =>
       `${item.name} - $${item.price} - ${item.description} - Available: ${item.available ? 'Yes' : 'No'} - Category: ${item.category} - Dietary: ${item.dietary.vegan ? 'Vegan' : ''} ${item.dietary.vegetarian ? 'Vegetarian' : ''} ${item.dietary.glutenFree ? 'Gluten-free' : ''} ${item.dietary.spicy ? 'Spicy' : ''} - Ingredients: ${item.ingredients.join(', ')}`
     ).join('\n');
 
-    const systemPrompt = `You are a helpful restaurant assistant chatbot. You have access to the current menu and can help with:
+    const systemPrompt = `You are a helpful restaurant assistant chatbot for JR's Grill, a premium steakhouse. You have access to the current menu and can help with:
 - Menu items, prices, ingredients, dietary information
 - Recommendations based on preferences (vegan, vegetarian, gluten-free, spicy, etc.)
-- Reservation information 
+- Reservation information and suggestions
+- Taking orders through natural language (e.g., "I'd like a ribeye steak")
 - General restaurant questions
 
 Current menu:
@@ -208,19 +209,27 @@ ${menuText}
 
 Today's reservations: ${reservations.length} reservations scheduled.
 
-Be friendly, concise, and helpful. If asked about something not on the menu, politely say so.`;
+IMPORTANT FORMATTING RULES:
+- Use plain text, avoid excessive markdown
+- Keep responses concise and friendly
+- When listing items, use simple numbered lists
+- For emphasis, just capitalize key words instead of using ** or *
+
+If a customer wants to order, confirm the items clearly and ask if they want to add anything else.`;
+
+    // Build messages array with conversation history
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      // Include last 10 messages from history for context
+      ...conversationHistory.slice(-10).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      })),
+      { role: 'user', content: message }
+    ];
 
     const completion = await createCompletionWithModelFallback(groqClient, {
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt
-        },
-        {
-          role: 'user',
-          content: message
-        }
-      ],
+      messages,
       temperature: 0.7,
       max_tokens: 500,
       stream: true
@@ -234,6 +243,84 @@ Be friendly, concise, and helpful. If asked about something not on the menu, pol
     }
     console.error('Groq chat error:', error);
     throw error;
+  }
+};
+
+// Parse natural language order intent
+export const parseOrderIntent = async (message, menuItems) => {
+  try {
+    const groqClient = getGroqClient();
+    if (!groqClient) return null;
+
+    const model = process.env.GROQ_MODEL;
+    if (!model) return null;
+
+    const menuNames = menuItems.map(item => item.name).join(', ');
+
+    const prompt = `Analyze this customer message for order intent. Extract any menu items they want to order.
+
+Available menu items: ${menuNames}
+
+Customer message: "${message}"
+
+If ordering, respond with ONLY a JSON object: {"ordering": true, "items": [{"name": "exact menu item name", "quantity": 1}]}
+If not ordering, respond with: {"ordering": false, "items": []}`;
+
+    const completion = await createCompletionWithModelFallback(groqClient, {
+      messages: [
+        { role: 'system', content: 'You are an order parser. Respond with valid JSON only.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.3,
+      max_tokens: 200
+    }, model);
+
+    const response = completion.choices[0]?.message?.content || '{"ordering": false, "items": []}';
+    return JSON.parse(response);
+  } catch (error) {
+    console.error('Order parse error:', error);
+    return { ordering: false, items: [] };
+  }
+};
+
+// Get pairing suggestions based on cart items
+export const getPairingSuggestions = async (cartItems, menuItems) => {
+  try {
+    const groqClient = getGroqClient();
+    if (!groqClient) return [];
+
+    const model = process.env.GROQ_MODEL;
+    if (!model) return [];
+
+    const cartNames = cartItems.map(item => item.name).join(', ');
+    const menuText = menuItems.map(item => `${item.name} ($${item.price}) - ${item.category}`).join('\n');
+
+    const prompt = `Customer's cart: ${cartNames}
+
+Available menu items:
+${menuText}
+
+Suggest 2-3 items that would pair well with their order. Consider:
+- Sides that complement main dishes
+- Drinks that go with the meal
+- Desserts appropriate for the order size
+
+Respond with ONLY a JSON array of item names: ["Item 1", "Item 2"]`;
+
+    const completion = await createCompletionWithModelFallback(groqClient, {
+      messages: [
+        { role: 'system', content: 'You are a restaurant pairing expert. Respond with valid JSON arrays only.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.5,
+      max_tokens: 100
+    }, model);
+
+    const response = completion.choices[0]?.message?.content || '[]';
+    return JSON.parse(response);
+  } catch (error) {
+    console.error('Pairing suggestion error:', error);
+    return [];
   }
 };
 
@@ -270,7 +357,7 @@ Comment: "${comment}"`;
 
     const response = completion.choices[0]?.message?.content || '{"sentiment":"neutral","score":0}';
     const result = JSON.parse(response);
-    
+
     return {
       sentiment: result.sentiment || 'neutral',
       score: result.score || 0
