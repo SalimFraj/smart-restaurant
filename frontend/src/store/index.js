@@ -173,31 +173,69 @@ export const useNotificationStore = create((set, get) => ({
     },
 }));
 
-// Favorites store
+// Favorites store with backend sync
 export const useFavoritesStore = create(
     persist(
         (set, get) => ({
             favorites: [],
+            syncing: false,
 
-            addFavorite: (itemId) => {
-                if (!get().favorites.includes(itemId)) {
-                    set({ favorites: [...get().favorites, itemId] });
+            // Initialize favorites from backend for logged-in users
+            initFromBackend: async () => {
+                try {
+                    const response = await fetch(`${import.meta.env.VITE_API_URL || '/api/v1'}/profile/favorites`, {
+                        credentials: 'include'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && Array.isArray(data.data)) {
+                            set({ favorites: data.data.map(item => item._id || item) });
+                        }
+                    }
+                } catch (error) {
+                    console.log('Could not sync favorites from backend');
                 }
             },
 
-            removeFavorite: (itemId) => {
-                set({ favorites: get().favorites.filter((id) => id !== itemId) });
+            addFavorite: async (itemId) => {
+                if (!get().favorites.includes(itemId)) {
+                    set({ favorites: [...get().favorites, itemId] });
+                    // Sync to backend
+                    try {
+                        await fetch(`${import.meta.env.VITE_API_URL || '/api/v1'}/profile/favorites/${itemId}`, {
+                            method: 'POST',
+                            credentials: 'include'
+                        });
+                    } catch (error) {
+                        // Silent fail - local storage still works
+                    }
+                }
             },
 
-            toggleFavorite: (itemId) => {
+            removeFavorite: async (itemId) => {
+                set({ favorites: get().favorites.filter((id) => id !== itemId) });
+                // Sync to backend
+                try {
+                    await fetch(`${import.meta.env.VITE_API_URL || '/api/v1'}/profile/favorites/${itemId}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                } catch (error) {
+                    // Silent fail - local storage still works
+                }
+            },
+
+            toggleFavorite: async (itemId) => {
                 if (get().favorites.includes(itemId)) {
-                    get().removeFavorite(itemId);
+                    await get().removeFavorite(itemId);
                 } else {
-                    get().addFavorite(itemId);
+                    await get().addFavorite(itemId);
                 }
             },
 
             isFavorite: (itemId) => get().favorites.includes(itemId),
+
+            clearFavorites: () => set({ favorites: [] }),
         }),
         {
             name: 'favorites-storage',

@@ -21,6 +21,26 @@ export default function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Format AI response markdown to HTML
+  const formatMessage = (content) => {
+    if (!content) return '';
+    return content
+      // Bold: **text** or __text__
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__(.+?)__/g, '<strong>$1</strong>')
+      // Italic: *text* or _text_
+      .replace(/\*(?!\*)(.+?)\*(?!\*)/g, '<em>$1</em>')
+      .replace(/_(?!_)(.+?)_(?!_)/g, '<em>$1</em>')
+      // Bullet lists: - item or * item
+      .replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>')
+      // Numbered lists: 1. item
+      .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+      // Wrap consecutive <li> items in <ul>
+      .replace(/(<li>.+<\/li>\n?)+/g, '<ul class="list-disc pl-4 my-2">$&</ul>')
+      // Line breaks
+      .replace(/\n/g, '<br/>');
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -153,7 +173,14 @@ export default function Chatbot() {
               ? 'bg-primary text-primary-content rounded-br-sm'
               : 'bg-base-200 text-base-content rounded-bl-sm'
               }`}>
-              <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+              {msg.role === 'user' ? (
+                <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+              ) : (
+                <div
+                  className="text-sm break-words prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
+                />
+              )}
             </div>
           </div>
         ))}

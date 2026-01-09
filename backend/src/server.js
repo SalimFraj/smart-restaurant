@@ -23,6 +23,7 @@ import feedbackRoutes from './routes/feedbackRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 dotenv.config();
 
@@ -202,6 +203,7 @@ app.use('/api/v1/feedback', feedbackRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/profile', profileRoutes);
 
 // Health check with detailed info
 app.get('/api/v1/health', (req, res) => {
