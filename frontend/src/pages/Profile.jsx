@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useFavoritesStore } from '../store';
 
 const DIETARY_OPTIONS = [
     { value: 'vegetarian', label: '🥬 Vegetarian', emoji: '🥬' },
@@ -27,6 +28,7 @@ export default function Profile() {
     const { user, updateUser } = useAuth();
     const { t } = useTranslation();
     const queryClient = useQueryClient();
+    const { favorites: localFavorites, removeFavorite: removeLocalFavorite } = useFavoritesStore();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -40,13 +42,14 @@ export default function Profile() {
     });
 
     // Fetch full profile data
-    const { data: profileData, isLoading } = useQuery({
+    const { data: profileData, isLoading, refetch } = useQuery({
         queryKey: ['profile'],
         queryFn: async () => {
             const response = await api.get('/profile');
             return response.data.data;
         },
-        enabled: !!user
+        enabled: !!user,
+        refetchOnWindowFocus: true
     });
 
     // Update form when profile loads
@@ -65,6 +68,13 @@ export default function Profile() {
         }
     }, [profileData]);
 
+    // Refetch profile when local favorites change
+    useEffect(() => {
+        if (user && localFavorites) {
+            refetch();
+        }
+    }, [localFavorites, user, refetch]);
+
     // Update profile mutation
     const updateProfileMutation = useMutation({
         mutationFn: async (data) => {
@@ -72,13 +82,13 @@ export default function Profile() {
             return response.data;
         },
         onSuccess: (data) => {
-            toast.success('Profile updated successfully!');
+            toast.success(t('profile.updatedSuccess'));
             queryClient.invalidateQueries(['profile']);
             if (updateUser) updateUser(data.data);
             setIsEditing(false);
         },
         onError: (error) => {
-            toast.error(error.response?.data?.message || 'Failed to update profile');
+            toast.error(error.response?.data?.message || t('profile.updateError'));
         }
     });
 
@@ -86,10 +96,11 @@ export default function Profile() {
     const removeFavoriteMutation = useMutation({
         mutationFn: async (menuItemId) => {
             const response = await api.delete(`/profile/favorites/${menuItemId}`);
-            return response.data;
+            return { response: response.data, menuItemId };
         },
-        onSuccess: () => {
-            toast.success('Removed from favorites');
+        onSuccess: ({ menuItemId }) => {
+            toast.success(t('profile.removedFromFavorites'));
+            removeLocalFavorite(menuItemId);
             queryClient.invalidateQueries(['profile']);
         }
     });
@@ -128,9 +139,9 @@ export default function Profile() {
             <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
                 <div className="text-center">
                     <span className="text-8xl mb-6 block">🔒</span>
-                    <h2 className="text-2xl font-bold mb-4">Please Login</h2>
-                    <p className="text-base-content/70 mb-6">You need to be logged in to view your profile</p>
-                    <Link to="/login" className="btn btn-primary">Login</Link>
+                    <h2 className="text-2xl font-bold mb-4">{t('profile.pleaseLogin')}</h2>
+                    <p className="text-base-content/70 mb-6">{t('profile.loginRequired')}</p>
+                    <Link to="/login" className="btn btn-primary">{t('profile.login')}</Link>
                 </div>
             </div>
         );
@@ -170,21 +181,21 @@ export default function Profile() {
                         <div className="card-body p-4 text-center">
                             <span className="text-3xl mb-2">📦</span>
                             <div className="text-2xl font-bold text-primary">{profileData?.orderStats?.totalOrders || 0}</div>
-                            <div className="text-xs text-base-content/70">Orders</div>
+                            <div className="text-xs text-base-content/70">{t('profile.orders')}</div>
                         </div>
                     </div>
                     <div className="card bg-base-100 shadow-lg">
                         <div className="card-body p-4 text-center">
                             <span className="text-3xl mb-2">💰</span>
                             <div className="text-2xl font-bold text-primary">${profileData?.orderStats?.totalSpent?.toFixed(0) || 0}</div>
-                            <div className="text-xs text-base-content/70">Spent</div>
+                            <div className="text-xs text-base-content/70">{t('profile.spent')}</div>
                         </div>
                     </div>
                     <div className="card bg-base-100 shadow-lg">
                         <div className="card-body p-4 text-center">
                             <span className="text-3xl mb-2">❤️</span>
                             <div className="text-2xl font-bold text-primary">{profileData?.favorites?.length || 0}</div>
-                            <div className="text-xs text-base-content/70">Favorites</div>
+                            <div className="text-xs text-base-content/70">{t('profile.favorites')}</div>
                         </div>
                     </div>
                     <div className="card bg-base-100 shadow-lg">
@@ -193,7 +204,7 @@ export default function Profile() {
                             <div className="text-2xl font-bold text-primary">
                                 {new Date(profileData?.createdAt).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
                             </div>
-                            <div className="text-xs text-base-content/70">Member Since</div>
+                            <div className="text-xs text-base-content/70">{t('profile.memberSince')}</div>
                         </div>
                     </div>
                 </div>
@@ -208,13 +219,13 @@ export default function Profile() {
                     <div className="card-body">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="card-title text-xl">
-                                <span>👤</span> Personal Information
+                                <span>👤</span> {t('profile.personalInfo')}
                             </h2>
                             <button
                                 onClick={() => setIsEditing(!isEditing)}
                                 className="btn btn-ghost btn-sm"
                             >
-                                {isEditing ? 'Cancel' : 'Edit'}
+                                {isEditing ? t('profile.cancel') : t('profile.edit')}
                             </button>
                         </div>
 
@@ -222,7 +233,7 @@ export default function Profile() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text font-medium">Full Name</span>
+                                        <span className="label-text font-medium">{t('profile.fullName')}</span>
                                     </label>
                                     <input
                                         type="text"
@@ -234,7 +245,7 @@ export default function Profile() {
                                 </div>
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text font-medium">Phone</span>
+                                        <span className="label-text font-medium">{t('profile.phone')}</span>
                                     </label>
                                     <input
                                         type="tel"
@@ -248,13 +259,13 @@ export default function Profile() {
                             </div>
                             <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text font-medium">Delivery Address</span>
+                                    <span className="label-text font-medium">{t('profile.deliveryAddress')}</span>
                                 </label>
                                 <textarea
                                     value={formData.address}
                                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                     className="textarea textarea-bordered"
-                                    placeholder="Enter your default delivery address"
+                                    placeholder={t('profile.addressPlaceholder')}
                                     rows={2}
                                     disabled={!isEditing}
                                 />
@@ -268,9 +279,9 @@ export default function Profile() {
                                         disabled={updateProfileMutation.isPending}
                                     >
                                         {updateProfileMutation.isPending ? (
-                                            <><span className="loading loading-spinner loading-sm"></span> Saving...</>
+                                            <><span className="loading loading-spinner loading-sm"></span> {t('profile.saving')}</>
                                         ) : (
-                                            'Save Changes'
+                                            t('profile.save')
                                         )}
                                     </button>
                                 </div>
@@ -288,12 +299,12 @@ export default function Profile() {
                 >
                     <div className="card-body">
                         <h2 className="card-title text-xl mb-4">
-                            <span>🥗</span> Dietary Preferences
+                            <span>🥗</span> {t('profile.dietaryPreferences')}
                         </h2>
 
                         <div className="mb-6">
                             <label className="label">
-                                <span className="label-text font-medium">Your Diet</span>
+                                <span className="label-text font-medium">{t('profile.yourDiet')}</span>
                             </label>
                             <div className="flex flex-wrap gap-2">
                                 {DIETARY_OPTIONS.map(option => (
@@ -302,8 +313,8 @@ export default function Profile() {
                                         type="button"
                                         onClick={() => togglePreference(option.value)}
                                         className={`btn btn-sm ${formData.dietaryPreferences.preferences.includes(option.value)
-                                                ? 'btn-primary'
-                                                : 'btn-outline'
+                                            ? 'btn-primary'
+                                            : 'btn-outline'
                                             }`}
                                     >
                                         {option.emoji} {option.value}
@@ -314,7 +325,7 @@ export default function Profile() {
 
                         <div className="mb-6">
                             <label className="label">
-                                <span className="label-text font-medium">⚠️ Allergies</span>
+                                <span className="label-text font-medium">⚠️ {t('profile.allergies')}</span>
                             </label>
                             <div className="flex flex-wrap gap-2">
                                 {ALLERGY_OPTIONS.map(allergy => (
@@ -323,8 +334,8 @@ export default function Profile() {
                                         type="button"
                                         onClick={() => toggleAllergy(allergy)}
                                         className={`btn btn-sm ${formData.dietaryPreferences.allergies.includes(allergy)
-                                                ? 'btn-error'
-                                                : 'btn-outline btn-error'
+                                            ? 'btn-error'
+                                            : 'btn-outline btn-error'
                                             }`}
                                     >
                                         {allergy}
@@ -335,7 +346,7 @@ export default function Profile() {
 
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text font-medium">Additional Notes</span>
+                                <span className="label-text font-medium">{t('profile.additionalNotes')}</span>
                             </label>
                             <textarea
                                 value={formData.dietaryPreferences.notes}
@@ -344,7 +355,7 @@ export default function Profile() {
                                     dietaryPreferences: { ...formData.dietaryPreferences, notes: e.target.value }
                                 })}
                                 className="textarea textarea-bordered"
-                                placeholder="Any other dietary notes or restrictions..."
+                                placeholder={t('profile.notesPlaceholder')}
                                 rows={2}
                             />
                         </div>
@@ -355,7 +366,7 @@ export default function Profile() {
                                 className="btn btn-primary btn-sm"
                                 disabled={updateProfileMutation.isPending}
                             >
-                                Save Preferences
+                                {t('profile.savePreferences')}
                             </button>
                         </div>
                     </div>
@@ -370,14 +381,14 @@ export default function Profile() {
                 >
                     <div className="card-body">
                         <h2 className="card-title text-xl mb-4">
-                            <span>❤️</span> My Favorites
+                            <span>❤️</span> {t('profile.myFavorites')}
                         </h2>
 
                         {profileData?.favorites?.length === 0 ? (
                             <div className="text-center py-8">
                                 <span className="text-6xl mb-4 block">💔</span>
-                                <p className="text-base-content/70 mb-4">No favorites yet</p>
-                                <Link to="/menu" className="btn btn-primary btn-sm">Browse Menu</Link>
+                                <p className="text-base-content/70 mb-4">{t('profile.noFavorites')}</p>
+                                <Link to="/menu" className="btn btn-primary btn-sm">{t('profile.browseMenu')}</Link>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -394,7 +405,7 @@ export default function Profile() {
                                                     onClick={() => removeFavoriteMutation.mutate(item._id)}
                                                     className="btn btn-ghost btn-xs text-error"
                                                 >
-                                                    🗑️ Remove
+                                                    🗑️ {t('profile.remove')}
                                                 </button>
                                             </div>
                                         </div>
