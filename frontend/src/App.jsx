@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import toast, { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { useAuth } from './context/AuthContext';
 import { useUIStore } from './store';
 import Navbar from './components/Navbar';
@@ -104,6 +105,7 @@ function App() {
           <AnimatedRoutes />
           <Chatbot />
           <PWAInstallPrompt />
+          <Analytics />
           <Toaster
             position="top-right"
             toastOptions={{
