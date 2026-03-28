@@ -76,6 +76,18 @@ export const chat = async (req, res, next) => {
       return res.status(400).json({ message: 'Message is required' });
     }
 
+    // Limit message length to prevent abuse
+    const sanitizedMessage = String(message).slice(0, 500);
+
+    // Sanitize conversation history - only allow valid roles and limit content length
+    const sanitizedHistory = history
+      .filter(msg => msg && (msg.role === 'user' || msg.role === 'assistant') && msg.content)
+      .slice(-10)
+      .map(msg => ({
+        role: msg.role,
+        content: String(msg.content).slice(0, 500)
+      }));
+
     const menuItems = await MenuItem.find({ available: true });
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -90,8 +102,8 @@ export const chat = async (req, res, next) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // Pass conversation history to getChatResponse for context
-    const stream = await getChatResponse(message, menuItems, reservations, history);
+    // Pass sanitized conversation history to getChatResponse for context
+    const stream = await getChatResponse(sanitizedMessage, menuItems, reservations, sanitizedHistory);
 
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content || '';
