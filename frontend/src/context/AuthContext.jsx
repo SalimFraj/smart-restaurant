@@ -65,6 +65,18 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/auth/login', { email, password });
       if (response.data.success && response.data.user) {
+        // Verify the cookie was actually stored by checking auth
+        try {
+          await api.get('/auth/me');
+        } catch (verifyError) {
+          // Only warn about blocked cookies if we got a 401 (auth failed)
+          if (verifyError.response?.status === 401) {
+            setUser(null);
+            toast.error('Login failed: Your browser is blocking cookies. Please enable cookies for this site in your browser settings and try again.', { duration: 8000 });
+            return { success: false, message: 'Cookies are blocked by your browser' };
+          }
+          // For other errors (network, server), cookie likely set fine — proceed
+        }
         setUser(response.data.user);
         toast.success('Logged in successfully');
         return { success: true };
@@ -91,6 +103,16 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/auth/register', userData);
       if (response.data.success && response.data.user) {
+        // Verify the cookie was actually stored by checking auth
+        try {
+          await api.get('/auth/me');
+        } catch (verifyError) {
+          if (verifyError.response?.status === 401) {
+            setUser(null);
+            toast.error('Registration succeeded but your browser is blocking cookies. Please enable cookies for this site in your browser settings, then log in.', { duration: 8000 });
+            return { success: false, message: 'Cookies are blocked by your browser' };
+          }
+        }
         setUser(response.data.user);
         toast.success('Account created successfully');
         return { success: true };

@@ -106,9 +106,14 @@ self.addEventListener('fetch', (event) => {
                     .catch(() => {
                         // Return offline page for navigation requests
                         if (request.mode === 'navigate') {
-                            return caches.match('/');
+                            return caches.match('/').then((cached) => {
+                                return cached || new Response(
+                                    '<html><body><h1>Offline</h1><p>Please check your connection and try again.</p></body></html>',
+                                    { headers: { 'Content-Type': 'text/html' } }
+                                );
+                            });
                         }
-                        return null;
+                        return new Response('', { status: 408, statusText: 'Offline' });
                     });
             })
     );
